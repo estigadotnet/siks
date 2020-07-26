@@ -59,7 +59,7 @@
 			$env = "development";
 			break;
 
-		case "http://siks.salinalintas.com":
+		case "siks.salinalintas.com":
 			$env = "production";
 			break;
 
