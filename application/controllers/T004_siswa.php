@@ -115,17 +115,21 @@ class T004_siswa extends CI_Controller
         $this->load->library('pagination');
         $this->pagination->initialize($config);
 
+        $this->load->model("T005_nonrutin_model");
+        $nonRutinData = $this->T005_nonrutin_model->get_all();
+
         $data = array(
             't004_siswa_data' => $t004_siswa,
-            'q'          => $q,
-            "idkelas"    => $idkelas,
-            'pagination' => $this->pagination->create_links(),
-            'total_rows' => $config['total_rows'],
-            'start'      => $start,
-            "head"       => array("title" => "Siswa"),
-            "title"      => "Siswa",
-            "kelas"      => $kelas,
-            "jumRec"     => $jumRec
+            'q'               => $q,
+            "idkelas"         => $idkelas,
+            'pagination'      => $this->pagination->create_links(),
+            'total_rows'      => $config['total_rows'],
+            'start'           => $start,
+            "head"            => array("title" => "Siswa"),
+            "title"           => "Siswa",
+            "kelas"           => $kelas,
+            "jumRec"          => $jumRec,
+            "nonRutinData"    => $nonRutinData
         );
 
         if (!$this->ion_auth->logged_in()) {

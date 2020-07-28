@@ -65,6 +65,12 @@
           		<th>SPP</th>
           		<th>Catering</th>
           		<th>Worksheet</th>
+              <?php foreach ($nonRutinData as $nonRutin) {
+                // code...
+                ?>
+              <th><?php echo  $nonRutin->Jenis; ?></th>
+                <?php
+              } ?>
           		<th>Action</th>
             </tr>
             <?php foreach ($t004_siswa_data as $t004_siswa) { ?>
@@ -77,6 +83,12 @@
         			<td><?php echo $t004_siswa->byrspp ?></td>
         			<td><?php echo $t004_siswa->byrcatering ?></td>
         			<td><?php echo $t004_siswa->byrworksheet ?></td>
+              <?php foreach ($nonRutinData as $nonRutin) {
+                // code...
+                ?>
+              <td><?php echo  $nonRutin->Jenis; ?></td>
+                <?php
+              } ?>
         			<td style="text-align:center" width="200px">
         				<?php
         				echo anchor(site_url('t004_siswa/read/'.$t004_siswa->idsiswa),'Read');
