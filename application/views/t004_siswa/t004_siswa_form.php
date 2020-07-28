@@ -27,7 +27,7 @@
         <!-- container fluid -->
         <div class="container-fluid">
 
-        <form action="<?php echo $action; ?>" method="post">
+        <form action="<?php echo $action; ?>" method="post" class="mb-2">
 	    <div class="form-group">
             <label for="varchar">NIS <?php echo form_error('nis') ?></label>
             <input type="text" class="form-control" name="nis" id="nis" placeholder="NIS" value="<?php echo $nis; ?>" />
@@ -61,9 +61,12 @@
             <label for="int">Worksheet <?php echo form_error('byrworksheet') ?></label>
             <input type="text" class="form-control" name="byrworksheet" id="byrworksheet" placeholder="Worksheet" value="<?php echo $byrworksheet; ?>" />
         </div>
-	    <input type="hidden" name="idsiswa" value="<?php echo $idsiswa; ?>" />
-	    <button type="submit" class="btn btn-primary"><?php echo $button ?></button>
-	    <a href="<?php echo site_url('t004_siswa') ?>" class="btn btn-default">Cancel</a>
+        <div class="form-group">
+          <input type="hidden" name="idsiswa" value="<?php echo $idsiswa; ?>" />
+    	    <button type="submit" class="btn btn-primary"><?php echo $button ?></button>
+    	    <a href="<?php echo site_url('t004_siswa') ?>" class="btn btn-default">Cancel</a>
+        </div>
+
 	</form>
 
         </div>
