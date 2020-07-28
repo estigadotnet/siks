@@ -109,6 +109,12 @@
                 <p>Siswa</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="<?php echo site_url(); ?>t005_nonrutin" class="nav-link">
+                <i class="fas fa-donate nav-icon"></i>
+                <p>Pembayaran Non-Rutin</p>
+              </a>
+            </li>
           </ul>
         </li>
 
@@ -161,13 +167,13 @@
             </li>
             <li class="nav-item">
               <a href="<?php echo site_url(); ?>t101_spp/tunggakan_tgl" class="nav-link">
-                <i class="fas fa-exclamation-circle nav-icon"></i>
+                <i class="fas fa-exclamation nav-icon"></i>
                 <p>Tunggakan SPP</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="<?php echo site_url(); ?>t101_spp/tunggakan_nis" class="nav-link">
-                <i class="fas fa-exclamation-circle nav-icon"></i>
+                <i class="fas fa-user-clock nav-icon"></i>
                 <p>Tunggakan SPP Siswa</p>
               </a>
             </li>
@@ -179,7 +185,7 @@
             </li>
             <li class="nav-item">
               <a href="<?php echo site_url(); ?>mutasi/laporan" class="nav-link">
-                <i class="fas fa-cash-register nav-icon"></i>
+                <i class="fas fa-exchange-alt nav-icon"></i>
                 <p>Mutasi Rekening</p>
               </a>
             </li>
