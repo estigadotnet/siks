@@ -83,10 +83,11 @@
         			<td><?php echo $t004_siswa->byrspp ?></td>
         			<td><?php echo $t004_siswa->byrcatering ?></td>
         			<td><?php echo $t004_siswa->byrworksheet ?></td>
-              <?php foreach ($nonRutinData as $nonRutin) {
+              <td><?php echo (substr($t004_siswa->kelas, 0, 1) == 1 ? $nonRutinTrans[$t004_siswa->idsiswa][1] : 0); ?></td>
+              <?php for ($i = 2; $i <= count($nonRutinTrans[$t004_siswa->idsiswa]); $i++) {
                 // code...
                 ?>
-              <td><?php echo  $nonRutin->Jenis; ?></td>
+              <td><?php echo (substr($t004_siswa->kelas, 0, 1) > 1 ? $nonRutinTrans[$t004_siswa->idsiswa][$i] : 0); ?></td>
                 <?php
               } ?>
         			<td style="text-align:center" width="200px">

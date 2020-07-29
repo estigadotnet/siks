@@ -117,6 +117,8 @@ class T004_siswa extends CI_Controller
 
         $this->load->model("T005_nonrutin_model");
         $nonRutinData = $this->T005_nonrutin_model->get_all();
+        $this->load->model("T103_nonrutin_model");
+        $nonRutinTrans = $this->T103_nonrutin_model->get_all(); //echo "<pre>"; print_r($nonRutinTrans); echo "</pre>";
 
         $data = array(
             't004_siswa_data' => $t004_siswa,
@@ -129,7 +131,8 @@ class T004_siswa extends CI_Controller
             "title"           => "Siswa",
             "kelas"           => $kelas,
             "jumRec"          => $jumRec,
-            "nonRutinData"    => $nonRutinData
+            "nonRutinData"    => $nonRutinData,
+            "nonRutinTrans"   => $nonRutinTrans
         );
 
         if (!$this->ion_auth->logged_in()) {
