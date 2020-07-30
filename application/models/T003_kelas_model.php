@@ -15,27 +15,6 @@ class T003_kelas_model extends CI_Model
         parent::__construct();
     }
 
-    // get all only in siswa
-    function get_all_in_siswa()
-    {
-        // $this->db->order_by($this->id, $this->order);
-        $s = "
-          select
-            a.idkelas,
-            a.kelas
-          from
-            t003_kelas a
-            left join t004_siswa b on a.idkelas = b.idkelas
-          where
-            b.tahunajaran = '".$this->session->userdata("tahunajaran")."'
-          group by
-            a.idkelas
-        ";
-        //$this->db->order_by($this->orderBy, $this->order);
-        //return $this->db->get($this->table)->result();
-        return $this->db->query($s)->result();
-    }
-
     // get all
     function get_all()
     {
@@ -101,6 +80,27 @@ class T003_kelas_model extends CI_Model
     // ambil data guru untuk combo
     function getGuru() {
       return $this->db->query("select * from t002_guru order by idguru")->result();
+    }
+
+    // get all only in siswa
+    function get_all_in_siswa()
+    {
+        // $this->db->order_by($this->id, $this->order);
+        $s = "
+          select
+            a.idkelas,
+            a.kelas
+          from
+            t003_kelas a
+            left join t004_siswa b on a.idkelas = b.idkelas
+          where
+            b.tahunajaran = '".$this->session->userdata("tahunajaran")."'
+          group by
+            a.idkelas
+        ";
+        //$this->db->order_by($this->orderBy, $this->order);
+        //return $this->db->get($this->table)->result();
+        return $this->db->query($s)->result();
     }
 
 }

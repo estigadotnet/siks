@@ -15,70 +15,6 @@ class T004_siswa_model extends CI_Model
         parent::__construct();
     }
 
-    function naikkelas($data) {
-      $bulanIndo = array(
-        '01' => 'Januari',
-        '02' => 'Februari',
-        '03' => 'Maret',
-        '04' => 'April',
-        '05' => 'Mei',
-        '06' => 'Juni',
-        '07' => 'Juli',
-        '08' => 'Agustus',
-        '09' => 'September',
-        '10' => 'Oktober',
-        '11' => 'Nopember',
-        '12' => 'Desember'
-      );
-      $idkelasBaru     = $data["idkelasBaru"];
-      $tahunajaranBaru = $data["tahunajaranBaru"];
-      $spp             = $data["spp"];
-      $catering        = $data["catering"];
-      $worksheet       = $data["worksheet"];
-      $awalTempo       = $data["awalTempo"];
-      $s = "
-  			select
-  				nis, namasiswa
-  			from
-  				t004_siswa
-  			where
-  				tahunajaran = '".$data["tahunajaranLama"]."'
-  				and idkelas = '".$data["idkelasLama"]."'
-  			order by
-  				idkelas ASC";
-			$q = $this->db->query($s)->result(); //mysqli_query($konek, $s);
-      foreach ($q as $r) {
-        $data = array(
-          'nis' => $r->nis,
-          'namasiswa' => $r->namasiswa,
-          'idkelas' => $idkelasBaru,
-          'tahunajaran' => $tahunajaranBaru,
-          'byrspp' => $spp,
-          'byrcatering' => $catering,
-          'byrworksheet' => $worksheet,
-        );
-
-        $this->db->insert($this->table, $data);
-        // simpan 12 record ke tabel t101_spp
-        $idSiswa = $this->db->insert_id();
-        $awalTempo = substr($tahunajaranBaru, 0, 4) . "-07-01";
-        for ($i = 0; $i < 12; $i++) {
-          $jatuhTempo = date("Y-m-d", strtotime("+$i month", strtotime($awalTempo)));
-          $bulan = $bulanIndo[date('m', strtotime($jatuhTempo))] . " " . date('Y', strtotime($jatuhTempo));
-          $dataSpp = array(
-            "idsiswa"      => $idSiswa,
-            "jatuhtempo"   => $jatuhTempo,
-            "bulan"        => $bulan,
-            "byrspp"       => $spp,
-            "byrcatering"  => $catering,
-            "byrworksheet" => $worksheet
-          );
-          $this->db->insert("t101_spp", $dataSpp);
-        }
-      }
-
-    }
-
     // get all
     function get_all()
     {
@@ -93,6 +29,8 @@ class T004_siswa_model extends CI_Model
         $this->db->select("idsiswa, nis, namasiswa, t004_siswa.idkelas, tahunajaran, byrspp, byrcatering, byrworksheet, kelas");
         $this->db->from("t004_siswa");
         $this->db->join("t003_kelas", "t004_siswa.idkelas = t003_kelas.idkelas");
+        $this->db->join("t103_nonrutin", "t004_siswa.idsiswa = t103_nonrutin.idsiswa");
+        $this->db->join("t005_nonrutin", "t103_nonrutin.idjenis = t005_nonrutin.id")
         $this->db->where("tahunajaran", $this->session->userdata("tahunajaran"));
         $this->db->where($this->id, $id);
         //return $this->db->get($this->table)->row();
@@ -117,25 +55,6 @@ class T004_siswa_model extends CI_Model
         return $this->db->count_all_results();
     }
 
-    // get total rows
-    function total_rows_where($q = NULL) {
-        $this->db->select("idsiswa, nis, namasiswa, t004_siswa.idkelas, tahunajaran, byrspp, byrcatering, byrworksheet, kelas");
-        $this->db->from("t004_siswa");
-        $this->db->join("t003_kelas", "t004_siswa.idkelas = t003_kelas.idkelas");
-        $this->db->where("tahunajaran", $this->session->userdata("tahunajaran"));
-        return $this->db->count_all_results();
-    }
-
-    // get total rows by idkelas
-    function total_rows_idkelas($q = NULL) {
-        $this->db->select("idsiswa, nis, namasiswa, t004_siswa.idkelas, tahunajaran, byrspp, byrcatering, byrworksheet, kelas");
-        $this->db->from("t004_siswa");
-        $this->db->join("t003_kelas", "t004_siswa.idkelas = t003_kelas.idkelas");
-        $this->db->where("t004_siswa.idkelas", $q);
-        $this->db->where("tahunajaran", $this->session->userdata("tahunajaran"));
-        return $this->db->count_all_results();
-    }
-
     // get data with limit and search
     function get_limit_data($limit, $start = 0, $q = NULL) {
         $this->db->order_by($this->id, $this->order);
@@ -154,66 +73,6 @@ class T004_siswa_model extends CI_Model
         $this->db->join("t003_kelas", "t004_siswa.idkelas = t003_kelas.idkelas");
         //return $this->db->get($this->table)->result();
         return $this->db->get()->result();
-    }
-
-    // get data with limit and search
-    function get_limit_data_where($limit, $start = 0, $q = NULL) {
-        $this->db->order_by($this->id, $this->order);
-      	$this->db->limit($limit, $start);
-        // tambahan
-        $this->db->select("idsiswa, nis, namasiswa, t004_siswa.idkelas, tahunajaran, byrspp, byrcatering, byrworksheet, kelas");
-        $this->db->from("t004_siswa");
-        $this->db->join("t003_kelas", "t004_siswa.idkelas = t003_kelas.idkelas");
-        $this->db->where("tahunajaran", $this->session->userdata("tahunajaran"));
-        return $this->db->get()->result();
-    }
-
-    // get data with idkelas
-    function get_limit_data_idkelas($limit, $start = 0, $q = NULL) {
-        $this->db->order_by($this->id, $this->order);
-      	$this->db->limit($limit, $start);
-        // tambahan
-        $this->db->select("idsiswa, nis, namasiswa, t004_siswa.idkelas, tahunajaran, byrspp, byrcatering, byrworksheet, kelas");
-        $this->db->from("t004_siswa");
-        $this->db->join("t003_kelas", "t004_siswa.idkelas = t003_kelas.idkelas");
-        $this->db->where("t004_siswa.idkelas", $q);
-        $this->db->where("tahunajaran", $this->session->userdata("tahunajaran"));
-        return $this->db->get()->result();
-    }
-
-    function insert_naikkelas($data, $tahunajaranBaru)
-    {
-        $bulanIndo = array(
-          '01' => 'Januari',
-          '02' => 'Februari',
-          '03' => 'Maret',
-          '04' => 'April',
-          '05' => 'Mei',
-          '06' => 'Juni',
-          '07' => 'Juli',
-          '08' => 'Agustus',
-          '09' => 'September',
-          '10' => 'Oktober',
-          '11' => 'Nopember',
-          '12' => 'Desember'
-        );
-        $this->db->insert($this->table, $data);
-        // simpan 12 record ke tabel t101_spp
-        $idSiswa = $this->db->insert_id();
-        $awalTempo = substr($tahunajaranBaru, 0, 4) . "-07-01";
-        for ($i = 0; $i < 12; $i++) {
-          $jatuhTempo = date("Y-m-d", strtotime("+$i month", strtotime($awalTempo)));
-          $bulan = $bulanIndo[date('m', strtotime($jatuhTempo))] . " " . date('Y', strtotime($jatuhTempo));
-          $dataSpp = array(
-            "idsiswa"      => $idSiswa,
-            "jatuhtempo"   => $jatuhTempo,
-            "bulan"        => $bulan,
-            "byrspp"       => $data["byrspp"],
-            "byrcatering"  => $data["byrcatering"],
-            "byrworksheet" => $data["byrworksheet"]
-          );
-          $this->db->insert("t101_spp", $dataSpp);
-        }
     }
 
     // insert data
@@ -292,6 +151,151 @@ class T004_siswa_model extends CI_Model
         $nextNis = $kodeSekolah . substr($this->session->userdata("tahunajaran"),2,2) . "0001";
       }
       return $nextNis;
+    }
+
+    // get total rows
+    function total_rows_where($q = NULL) {
+        $this->db->select("idsiswa, nis, namasiswa, t004_siswa.idkelas, tahunajaran, byrspp, byrcatering, byrworksheet, kelas");
+        $this->db->from("t004_siswa");
+        $this->db->join("t003_kelas", "t004_siswa.idkelas = t003_kelas.idkelas");
+        $this->db->where("tahunajaran", $this->session->userdata("tahunajaran"));
+        return $this->db->count_all_results();
+    }
+
+    // get total rows by idkelas
+    function total_rows_idkelas($q = NULL) {
+        $this->db->select("idsiswa, nis, namasiswa, t004_siswa.idkelas, tahunajaran, byrspp, byrcatering, byrworksheet, kelas");
+        $this->db->from("t004_siswa");
+        $this->db->join("t003_kelas", "t004_siswa.idkelas = t003_kelas.idkelas");
+        $this->db->where("t004_siswa.idkelas", $q);
+        $this->db->where("tahunajaran", $this->session->userdata("tahunajaran"));
+        return $this->db->count_all_results();
+    }
+
+    // get data with limit and search
+    function get_limit_data_where($limit, $start = 0, $q = NULL) {
+        $this->db->order_by($this->id, $this->order);
+      	$this->db->limit($limit, $start);
+        // tambahan
+        $this->db->select("idsiswa, nis, namasiswa, t004_siswa.idkelas, tahunajaran, byrspp, byrcatering, byrworksheet, kelas");
+        $this->db->from("t004_siswa");
+        $this->db->join("t003_kelas", "t004_siswa.idkelas = t003_kelas.idkelas");
+        $this->db->where("tahunajaran", $this->session->userdata("tahunajaran"));
+        return $this->db->get()->result();
+    }
+
+    // get data with idkelas
+    function get_limit_data_idkelas($limit, $start = 0, $q = NULL) {
+        $this->db->order_by($this->id, $this->order);
+      	$this->db->limit($limit, $start);
+        // tambahan
+        $this->db->select("idsiswa, nis, namasiswa, t004_siswa.idkelas, tahunajaran, byrspp, byrcatering, byrworksheet, kelas");
+        $this->db->from("t004_siswa");
+        $this->db->join("t003_kelas", "t004_siswa.idkelas = t003_kelas.idkelas");
+        $this->db->where("t004_siswa.idkelas", $q);
+        $this->db->where("tahunajaran", $this->session->userdata("tahunajaran"));
+        return $this->db->get()->result();
+    }
+
+    // insert data proses naik kelas
+    function naikkelas($data) {
+      $bulanIndo = array(
+        '01' => 'Januari',
+        '02' => 'Februari',
+        '03' => 'Maret',
+        '04' => 'April',
+        '05' => 'Mei',
+        '06' => 'Juni',
+        '07' => 'Juli',
+        '08' => 'Agustus',
+        '09' => 'September',
+        '10' => 'Oktober',
+        '11' => 'Nopember',
+        '12' => 'Desember'
+      );
+      $idkelasBaru     = $data["idkelasBaru"];
+      $tahunajaranBaru = $data["tahunajaranBaru"];
+      $spp             = $data["spp"];
+      $catering        = $data["catering"];
+      $worksheet       = $data["worksheet"];
+      $awalTempo       = $data["awalTempo"];
+      $s = "
+  			select
+  				nis, namasiswa
+  			from
+  				t004_siswa
+  			where
+  				tahunajaran = '".$data["tahunajaranLama"]."'
+  				and idkelas = '".$data["idkelasLama"]."'
+  			order by
+  				idkelas ASC";
+			$q = $this->db->query($s)->result(); //mysqli_query($konek, $s);
+      foreach ($q as $r) {
+        $data = array(
+          'nis' => $r->nis,
+          'namasiswa' => $r->namasiswa,
+          'idkelas' => $idkelasBaru,
+          'tahunajaran' => $tahunajaranBaru,
+          'byrspp' => $spp,
+          'byrcatering' => $catering,
+          'byrworksheet' => $worksheet,
+        );
+
+        $this->db->insert($this->table, $data);
+        // simpan 12 record ke tabel t101_spp
+        $idSiswa = $this->db->insert_id();
+        $awalTempo = substr($tahunajaranBaru, 0, 4) . "-07-01";
+        for ($i = 0; $i < 12; $i++) {
+          $jatuhTempo = date("Y-m-d", strtotime("+$i month", strtotime($awalTempo)));
+          $bulan = $bulanIndo[date('m', strtotime($jatuhTempo))] . " " . date('Y', strtotime($jatuhTempo));
+          $dataSpp = array(
+            "idsiswa"      => $idSiswa,
+            "jatuhtempo"   => $jatuhTempo,
+            "bulan"        => $bulan,
+            "byrspp"       => $spp,
+            "byrcatering"  => $catering,
+            "byrworksheet" => $worksheet
+          );
+          $this->db->insert("t101_spp", $dataSpp);
+        }
+      }
+
+    }
+
+    // insert data proses naik kelas
+    function insert_naikkelas($data, $tahunajaranBaru)
+    {
+        $bulanIndo = array(
+          '01' => 'Januari',
+          '02' => 'Februari',
+          '03' => 'Maret',
+          '04' => 'April',
+          '05' => 'Mei',
+          '06' => 'Juni',
+          '07' => 'Juli',
+          '08' => 'Agustus',
+          '09' => 'September',
+          '10' => 'Oktober',
+          '11' => 'Nopember',
+          '12' => 'Desember'
+        );
+        $this->db->insert($this->table, $data);
+        // simpan 12 record ke tabel t101_spp
+        $idSiswa = $this->db->insert_id();
+        $awalTempo = substr($tahunajaranBaru, 0, 4) . "-07-01";
+        for ($i = 0; $i < 12; $i++) {
+          $jatuhTempo = date("Y-m-d", strtotime("+$i month", strtotime($awalTempo)));
+          $bulan = $bulanIndo[date('m', strtotime($jatuhTempo))] . " " . date('Y', strtotime($jatuhTempo));
+          $dataSpp = array(
+            "idsiswa"      => $idSiswa,
+            "jatuhtempo"   => $jatuhTempo,
+            "bulan"        => $bulan,
+            "byrspp"       => $data["byrspp"],
+            "byrcatering"  => $data["byrcatering"],
+            "byrworksheet" => $data["byrworksheet"]
+          );
+          $this->db->insert("t101_spp", $dataSpp);
+        }
     }
 
 }

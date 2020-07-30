@@ -35,6 +35,9 @@
         	    <tr><td>SPP</td><td><?php echo $byrspp; ?></td></tr>
         	    <tr><td>Catering</td><td><?php echo $byrcatering; ?></td></tr>
         	    <tr><td>Worksheet</td><td><?php echo $byrworksheet; ?></td></tr>
+              <?php foreach ($dataNonRutin as $key => $value): ?>
+
+              <?php endforeach; ?>
         	    <tr><td></td><td><a href="<?php echo site_url('t004_siswa') ?>" class="btn btn-default">Cancel</a></td></tr>
         	</table>
 
