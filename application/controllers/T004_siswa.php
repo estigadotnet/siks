@@ -12,69 +12,6 @@ class T004_siswa extends CI_Controller
         $this->load->library('form_validation');
     }
 
-    public function naikkelas() {
-      if (!$this->ion_auth->logged_in()) {
-          redirect('/auth', 'refresh');
-      }
-
-      $this->load->model("T003_kelas_model");
-
-      $idkelas = urldecode($this->input->get('idkelas', TRUE));
-      $idkelasLama = $idkelas;
-      $rskelas = $this->T003_kelas_model->get_by_id($idkelas);
-      $kelasLama = $rskelas->kelas; //echo $kelasLama;
-
-      $dataKelas = $this->T003_kelas_model->get_all();
-
-      $this->load->model("T001_tahunajaran_model");
-      $dataTahunajaran = $this->T001_tahunajaran_model->get_all();
-
-      // $data = array(
-      //     'button' => 'Create',
-      //     'action' => site_url('t004_siswa/create_action'),
-      //     'idsiswa' => set_value('idsiswa'),
-      //     'nis' => set_value('nis', $this->T004_siswa_model->getNewNIS()),
-      //     'namasiswa' => set_value('namasiswa'),
-      //     'idkelas' => set_value('idkelas'),
-      //     'tahunajaran' => set_value("tahunajaran", $this->session->userdata("tahunajaran")),
-      //     'byrspp' => set_value('byrspp'),
-      //     'byrcatering' => set_value('byrcatering'),
-      //     'byrworksheet' => set_value('byrworksheet'),
-      //     "head" => array(
-      //       "title" => "Siswa"),
-      //     "title" => "Siswa",
-      //     "dataKelas" => $this->T004_siswa_model->getKelas(),
-      // );
-
-      $data = array(
-        'action'          => site_url('t004_siswa/naikkelas_action'),
-        "idkelasLama"     => $idkelasLama,
-        "kelasLama"       => $kelasLama,
-        "dataKelas"       => $dataKelas,
-        "dataTahunajaran" => $dataTahunajaran,
-        "head"            => array("title" => "Naik Kelas"),
-        "title"           => "Naik Kelas",
-      );
-
-      $this->load->view('t004_siswa/t004_siswa_naikkelas', $data);
-    }
-
-    public function naikkelas_action() {
-      $data = array(
-        "idkelasLama"     => $this->input->post("idkelasLama", true),
-        "tahunajaranLama" => $this->input->post("tahunajaranLama", true),
-        "idkelasBaru"     => $this->input->post("idkelasBaru", true),
-        "tahunajaranBaru" => $this->input->post("tahunajaranBaru", true),
-        "spp"             => $this->input->post("spp", true),
-  			"catering"        => $this->input->post("catering", true),
-  			"worksheet"       => $this->input->post("worksheet", true),
-  			"awalTempo"       => substr($this->input->post("tahunajaranBaru", true), 0, 4)."-07-01"
-      );
-
-      $this->T004_siswa_model->naikkelas($data);
-      redirect(site_url('t004_siswa'));
-    }
-
     public function index()
     {
         $q = urldecode($this->input->get('q', TRUE));
@@ -144,21 +81,23 @@ class T004_siswa extends CI_Controller
 
     public function read($id)
     {
+        $dataNonRutin = 0;
         $row = $this->T004_siswa_model->get_by_id($id);
+        $dataNonRutin = $this->T004_siswa_model->get_nonRutin_by_id($id);
         if ($row) {
             $data = array(
-            		'idsiswa' => $row->idsiswa,
-            		'nis' => $row->nis,
-            		'namasiswa' => $row->namasiswa,
-            		'idkelas' => $row->idkelas,
-            		'tahunajaran' => $row->tahunajaran,
-            		'byrspp' => $row->byrspp,
-            		'byrcatering' => $row->byrcatering,
+            		'idsiswa'      => $row->idsiswa,
+            		'nis'          => $row->nis,
+            		'namasiswa'    => $row->namasiswa,
+            		'idkelas'      => $row->idkelas,
+            		'tahunajaran'  => $row->tahunajaran,
+            		'byrspp'       => $row->byrspp,
+            		'byrcatering'  => $row->byrcatering,
             		'byrworksheet' => $row->byrworksheet,
-                "head" => array(
-                  "title" => "Siswa"),
-                "title" => "Siswa",
-                "kelas" => $row->kelas
+                "head"         => array("title" => "Siswa"),
+                "title"        => "Siswa",
+                "kelas"        => $row->kelas,
+                "dataNonRutin" => $dataNonRutin
             );
             $this->load->view('t004_siswa/t004_siswa_read', $data);
         } else {
@@ -352,6 +291,71 @@ class T004_siswa extends CI_Controller
         );
 
         $this->load->view('t004_siswa/t004_siswa_doc',$data);
+    }
+
+    //
+    public function naikkelas() {
+      if (!$this->ion_auth->logged_in()) {
+          redirect('/auth', 'refresh');
+      }
+
+      $this->load->model("T003_kelas_model");
+
+      $idkelas = urldecode($this->input->get('idkelas', TRUE));
+      $idkelasLama = $idkelas;
+      $rskelas = $this->T003_kelas_model->get_by_id($idkelas);
+      $kelasLama = $rskelas->kelas; //echo $kelasLama;
+
+      $dataKelas = $this->T003_kelas_model->get_all();
+
+      $this->load->model("T001_tahunajaran_model");
+      $dataTahunajaran = $this->T001_tahunajaran_model->get_all();
+
+      // $data = array(
+      //     'button' => 'Create',
+      //     'action' => site_url('t004_siswa/create_action'),
+      //     'idsiswa' => set_value('idsiswa'),
+      //     'nis' => set_value('nis', $this->T004_siswa_model->getNewNIS()),
+      //     'namasiswa' => set_value('namasiswa'),
+      //     'idkelas' => set_value('idkelas'),
+      //     'tahunajaran' => set_value("tahunajaran", $this->session->userdata("tahunajaran")),
+      //     'byrspp' => set_value('byrspp'),
+      //     'byrcatering' => set_value('byrcatering'),
+      //     'byrworksheet' => set_value('byrworksheet'),
+      //     "head" => array(
+      //       "title" => "Siswa"),
+      //     "title" => "Siswa",
+      //     "dataKelas" => $this->T004_siswa_model->getKelas(),
+      // );
+
+      $data = array(
+        'action'          => site_url('t004_siswa/naikkelas_action'),
+        "idkelasLama"     => $idkelasLama,
+        "kelasLama"       => $kelasLama,
+        "dataKelas"       => $dataKelas,
+        "dataTahunajaran" => $dataTahunajaran,
+        "head"            => array("title" => "Naik Kelas"),
+        "title"           => "Naik Kelas",
+      );
+
+      $this->load->view('t004_siswa/t004_siswa_naikkelas', $data);
+    }
+
+    //
+    public function naikkelas_action() {
+      $data = array(
+        "idkelasLama"     => $this->input->post("idkelasLama", true),
+        "tahunajaranLama" => $this->input->post("tahunajaranLama", true),
+        "idkelasBaru"     => $this->input->post("idkelasBaru", true),
+        "tahunajaranBaru" => $this->input->post("tahunajaranBaru", true),
+        "spp"             => $this->input->post("spp", true),
+  			"catering"        => $this->input->post("catering", true),
+  			"worksheet"       => $this->input->post("worksheet", true),
+  			"awalTempo"       => substr($this->input->post("tahunajaranBaru", true), 0, 4)."-07-01"
+      );
+
+      $this->T004_siswa_model->naikkelas($data);
+      redirect(site_url('t004_siswa'));
     }
 
 }

@@ -29,8 +29,6 @@ class T004_siswa_model extends CI_Model
         $this->db->select("idsiswa, nis, namasiswa, t004_siswa.idkelas, tahunajaran, byrspp, byrcatering, byrworksheet, kelas");
         $this->db->from("t004_siswa");
         $this->db->join("t003_kelas", "t004_siswa.idkelas = t003_kelas.idkelas");
-        $this->db->join("t103_nonrutin", "t004_siswa.idsiswa = t103_nonrutin.idsiswa");
-        $this->db->join("t005_nonrutin", "t103_nonrutin.idjenis = t005_nonrutin.id")
         $this->db->where("tahunajaran", $this->session->userdata("tahunajaran"));
         $this->db->where($this->id, $id);
         //return $this->db->get($this->table)->row();
@@ -296,6 +294,24 @@ class T004_siswa_model extends CI_Model
           );
           $this->db->insert("t101_spp", $dataSpp);
         }
+    }
+
+    // get data non rutin by idsiswa
+    function get_NonRutin_by_id($id) {
+      $s = "
+        select
+          a.idsiswa,
+          b.idjenis,
+          c.jenis,
+          b.sisa
+        from
+          t004_siswa a
+          left join t103_nonrutin b on a.idsiswa = b.idsiswa
+          left join t005_nonrutin c on b.idjenis = c.id
+        where
+          a.idsiswa = ".$id."
+        ";
+      return $this->db->query($s)->result();
     }
 
 }
