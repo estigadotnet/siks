@@ -15,6 +15,135 @@ class T101_spp_model extends CI_Model
         parent::__construct();
     }
 
+    // get all
+    function get_all()
+    {
+        $this->db->order_by($this->id, $this->order);
+        return $this->db->get($this->table)->result();
+    }
+
+    // get data by id
+    function get_by_id($id)
+    {
+        $this->db->where($this->id, $id);
+        return $this->db->get($this->table)->row_array();
+    }
+
+    // get total rows
+    function total_rows($q = NULL)
+    {
+        $this->db->like('idspp', $q);
+      	$this->db->or_like('idsiswa', $q);
+      	$this->db->or_like('jatuhtempo', $q);
+      	$this->db->or_like('bulan', $q);
+      	$this->db->or_like('nobayar', $q);
+      	$this->db->or_like('tglbayar', $q);
+      	$this->db->or_like('byrspp', $q);
+      	$this->db->or_like('byrcatering', $q);
+      	$this->db->or_like('byrworksheet', $q);
+      	$this->db->or_like('ket', $q);
+      	$this->db->or_like('idadmin', $q);
+      	$this->db->from($this->table);
+        return $this->db->count_all_results();
+    }
+
+    // get data with limit and search
+    function get_limit_data($limit, $start = 0, $q = NULL)
+    {
+        $this->db->order_by($this->id, $this->order);
+        $this->db->like('idspp', $q);
+      	$this->db->or_like('idsiswa', $q);
+      	$this->db->or_like('jatuhtempo', $q);
+      	$this->db->or_like('bulan', $q);
+      	$this->db->or_like('nobayar', $q);
+      	$this->db->or_like('tglbayar', $q);
+      	$this->db->or_like('byrspp', $q);
+      	$this->db->or_like('byrcatering', $q);
+      	$this->db->or_like('byrworksheet', $q);
+      	$this->db->or_like('ket', $q);
+      	$this->db->or_like('idadmin', $q);
+      	$this->db->limit($limit, $start);
+        return $this->db->get($this->table)->result();
+    }
+
+    // insert data
+    function insert($data)
+    {
+        $this->db->insert($this->table, $data);
+    }
+
+    // update data
+    function update($id, $data)
+    {
+        $this->db->where($this->id, $id);
+        $this->db->update($this->table, $data);
+    }
+
+    // delete data
+    function delete($id)
+    {
+        $this->db->where($this->id, $id);
+        $this->db->delete($this->table);
+    }
+
+    //
+    function getSiswa($nis)
+    {
+        $q = $this->db->query("select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where nis = '".$nis."' and tahunajaran = '".$this->session->userdata("tahunajaran")."'");
+        return $q->result_array();
+    }
+
+    //
+    function getSiswaById($idSiswa)
+    {
+        $q = $this->db->query("select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where idsiswa = '".$idSiswa."' and tahunajaran = '".$this->session->userdata("tahunajaran")."'");
+        return $q->row();
+    }
+
+    //
+    function getMaxNoBayar($idSpp)
+    {
+        $today = date("ymd");
+        $q = $this->db->query("select max(nobayar) as last from t101_spp where nobayar like '$today%'");
+        return $q->row_array();
+    }
+
+    //
+    function bayar($nextNoBayar, $tglBayar, $admin, $idSpp)
+    {
+        //mysqli_query($konek, "Update spp SET nobayar='$nextNoBayar',tglbayar='$tglBayar',ket='LUNAS',idadmin='$admin' WHERE idspp='$idspp'");
+        $s = "update t101_spp set nobayar = '$nextNoBayar', tglbayar = '$tglBayar', ket = 'LUNAS', idadmin = '$admin' where idspp = '$idSpp'";
+        $this->db->query($s);
+    }
+
+    //
+    function get_data_laporan($tgl1, $tgl2)
+    {
+      // $sqlBayar = mysqli_query($konek, "SELECT spp.*,siswa.nis,siswa.namasiswa,b.kelas FROM spp INNER JOIN siswa ON spp.idsiswa=siswa.idsiswa left join walikelas b on siswa.idkelas = b.idkelas WHERE tglbayar BETWEEN '$_GET[tgl1]' AND '$_GET[tgl2]' ORDER BY nobayar ASC");
+      $s = "select a.*, nis, namasiswa, kelas from t101_spp a
+        inner join t004_siswa b on a.idsiswa = b.idsiswa
+        left join t003_kelas c on b.idkelas = c.idkelas
+        where tglbayar between '$tgl1' AND '$tgl2' order by nobayar asc";
+      return $this->db->query($s)->result_array();
+    }
+
+    //
+    function get_data_tunggakan_tgl($tgl1, $tgl2)
+    {
+      // $sqlBayar = mysqli_query($konek, "SELECT spp.*,siswa.nis,siswa.namasiswa,b.kelas FROM spp INNER JOIN siswa ON spp.idsiswa=siswa.idsiswa left join walikelas b on siswa.idkelas = b.idkelas WHERE tglbayar BETWEEN '$_GET[tgl1]' AND '$_GET[tgl2]' ORDER BY nobayar ASC");
+      $s = "select a.*, nis, namasiswa, kelas from t101_spp a
+        inner join t004_siswa b on a.idsiswa = b.idsiswa
+        left join t003_kelas c on b.idkelas = c.idkelas
+        where jatuhtempo between '$tgl1' AND '$tgl2' and nobayar = '' order by nobayar asc";
+      return $this->db->query($s)->result_array();
+    }
+
+
+    function get_data_ubah_spp() {
+      $s = "";
+    }
+
+
     function update_ubah_spp2($data) {
       // ambil data siswa
       $q = "
@@ -43,6 +172,7 @@ class T101_spp_model extends CI_Model
         $this->db->query($q);
       }
     }
+
 
     function get_data_spp($idkelas) {
       $s = "
@@ -109,24 +239,6 @@ class T101_spp_model extends CI_Model
       return $this->db->query($s)->result();
     }
 
-    function get_data_ubah_spp() {
-      $s = "";
-    }
-
-    // get all
-    function get_all()
-    {
-        $this->db->order_by($this->id, $this->order);
-        return $this->db->get($this->table)->result();
-    }
-
-    // get data by id
-    function get_by_id($id)
-    {
-        $this->db->where($this->id, $id);
-        return $this->db->get($this->table)->row_array();
-    }
-
     // get total rows nis tunggakan
     function total_rows_nis_tunggakan($q = NULL)
     {
@@ -165,24 +277,6 @@ class T101_spp_model extends CI_Model
         //echo "<pre>"; print_r($aIdsiswa); echo "</pre>";
         $this->db->where_in("idsiswa", $aIdsiswa);
         $this->db->from($this->table);
-        return $this->db->count_all_results();
-    }
-
-    // get total rows
-    function total_rows($q = NULL)
-    {
-        $this->db->like('idspp', $q);
-      	$this->db->or_like('idsiswa', $q);
-      	$this->db->or_like('jatuhtempo', $q);
-      	$this->db->or_like('bulan', $q);
-      	$this->db->or_like('nobayar', $q);
-      	$this->db->or_like('tglbayar', $q);
-      	$this->db->or_like('byrspp', $q);
-      	$this->db->or_like('byrcatering', $q);
-      	$this->db->or_like('byrworksheet', $q);
-      	$this->db->or_like('ket', $q);
-      	$this->db->or_like('idadmin', $q);
-      	$this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
@@ -229,91 +323,6 @@ class T101_spp_model extends CI_Model
         $this->db->limit($limit, $start);
         $this->db->where_in("idsiswa", $aIdsiswa);
         return $this->db->get($this->table)->result();
-    }
-
-    // get data with limit and search
-    function get_limit_data($limit, $start = 0, $q = NULL)
-    {
-        $this->db->order_by($this->id, $this->order);
-        $this->db->like('idspp', $q);
-      	$this->db->or_like('idsiswa', $q);
-      	$this->db->or_like('jatuhtempo', $q);
-      	$this->db->or_like('bulan', $q);
-      	$this->db->or_like('nobayar', $q);
-      	$this->db->or_like('tglbayar', $q);
-      	$this->db->or_like('byrspp', $q);
-      	$this->db->or_like('byrcatering', $q);
-      	$this->db->or_like('byrworksheet', $q);
-      	$this->db->or_like('ket', $q);
-      	$this->db->or_like('idadmin', $q);
-      	$this->db->limit($limit, $start);
-        return $this->db->get($this->table)->result();
-    }
-
-    // insert data
-    function insert($data)
-    {
-        $this->db->insert($this->table, $data);
-    }
-
-    // update data
-    function update($id, $data)
-    {
-        $this->db->where($this->id, $id);
-        $this->db->update($this->table, $data);
-    }
-
-    // delete data
-    function delete($id)
-    {
-        $this->db->where($this->id, $id);
-        $this->db->delete($this->table);
-    }
-
-    function getSiswa($nis)
-    {
-        $q = $this->db->query("select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where nis = '".$nis."' and tahunajaran = '".$this->session->userdata("tahunajaran")."'");
-        return $q->result_array();
-    }
-
-    function getSiswaById($idSiswa)
-    {
-        $q = $this->db->query("select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where idsiswa = '".$idSiswa."' and tahunajaran = '".$this->session->userdata("tahunajaran")."'");
-        return $q->row();
-    }
-
-    function getMaxNoBayar($idSpp)
-    {
-        $today = date("ymd");
-        $q = $this->db->query("select max(nobayar) as last from t101_spp where nobayar like '$today%'");
-        return $q->row_array();
-    }
-
-    function bayar($nextNoBayar, $tglBayar, $admin, $idSpp)
-    {
-        //mysqli_query($konek, "Update spp SET nobayar='$nextNoBayar',tglbayar='$tglBayar',ket='LUNAS',idadmin='$admin' WHERE idspp='$idspp'");
-        $s = "update t101_spp set nobayar = '$nextNoBayar', tglbayar = '$tglBayar', ket = 'LUNAS', idadmin = '$admin' where idspp = '$idSpp'";
-        $this->db->query($s);
-    }
-
-    function get_data_laporan($tgl1, $tgl2)
-    {
-      // $sqlBayar = mysqli_query($konek, "SELECT spp.*,siswa.nis,siswa.namasiswa,b.kelas FROM spp INNER JOIN siswa ON spp.idsiswa=siswa.idsiswa left join walikelas b on siswa.idkelas = b.idkelas WHERE tglbayar BETWEEN '$_GET[tgl1]' AND '$_GET[tgl2]' ORDER BY nobayar ASC");
-      $s = "select a.*, nis, namasiswa, kelas from t101_spp a
-        inner join t004_siswa b on a.idsiswa = b.idsiswa
-        left join t003_kelas c on b.idkelas = c.idkelas
-        where tglbayar between '$tgl1' AND '$tgl2' order by nobayar asc";
-      return $this->db->query($s)->result_array();
-    }
-
-    function get_data_tunggakan_tgl($tgl1, $tgl2)
-    {
-      // $sqlBayar = mysqli_query($konek, "SELECT spp.*,siswa.nis,siswa.namasiswa,b.kelas FROM spp INNER JOIN siswa ON spp.idsiswa=siswa.idsiswa left join walikelas b on siswa.idkelas = b.idkelas WHERE tglbayar BETWEEN '$_GET[tgl1]' AND '$_GET[tgl2]' ORDER BY nobayar ASC");
-      $s = "select a.*, nis, namasiswa, kelas from t101_spp a
-        inner join t004_siswa b on a.idsiswa = b.idsiswa
-        left join t003_kelas c on b.idkelas = c.idkelas
-        where jatuhtempo between '$tgl1' AND '$tgl2' and nobayar = '' order by nobayar asc";
-      return $this->db->query($s)->result_array();
     }
 
 }

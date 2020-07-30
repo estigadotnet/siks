@@ -15,14 +15,6 @@ class T102_pengeluaran_model extends CI_Model
         parent::__construct();
     }
 
-    function get_data_laporan($tgl1, $tgl2)
-    {
-      // $sqlBayar = mysqli_query($konek, "SELECT spp.*,siswa.nis,siswa.namasiswa,b.kelas FROM spp INNER JOIN siswa ON spp.idsiswa=siswa.idsiswa left join walikelas b on siswa.idkelas = b.idkelas WHERE tglbayar BETWEEN '$_GET[tgl1]' AND '$_GET[tgl2]' ORDER BY nobayar ASC");
-      $s = "select * from t102_pengeluaran
-        where tgl between '$tgl1' AND '$tgl2' order by nobuk asc";
-      return $this->db->query($s)->result_array();
-    }
-
     // get all
     function get_all()
     {
@@ -40,11 +32,11 @@ class T102_pengeluaran_model extends CI_Model
     // get total rows
     function total_rows($q = NULL) {
         $this->db->like('id', $q);
-	$this->db->or_like('tgl', $q);
-	$this->db->or_like('nobuk', $q);
-	$this->db->or_like('keterangan', $q);
-	$this->db->or_like('jumlah', $q);
-	$this->db->from($this->table);
+      	$this->db->or_like('tgl', $q);
+      	$this->db->or_like('nobuk', $q);
+      	$this->db->or_like('keterangan', $q);
+      	$this->db->or_like('jumlah', $q);
+      	$this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
@@ -52,11 +44,11 @@ class T102_pengeluaran_model extends CI_Model
     function get_limit_data($limit, $start = 0, $q = NULL) {
         $this->db->order_by($this->id, $this->order);
         $this->db->like('id', $q);
-	$this->db->or_like('tgl', $q);
-	$this->db->or_like('nobuk', $q);
-	$this->db->or_like('keterangan', $q);
-	$this->db->or_like('jumlah', $q);
-	$this->db->limit($limit, $start);
+      	$this->db->or_like('tgl', $q);
+      	$this->db->or_like('nobuk', $q);
+      	$this->db->or_like('keterangan', $q);
+      	$this->db->or_like('jumlah', $q);
+      	$this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }
 
@@ -92,6 +84,15 @@ class T102_pengeluaran_model extends CI_Model
       $nextNoUrut = $lastNoUrut + 1;
       //$nextNobuk = $today.sprintf('%04s', $nextNoUrut);
       return $today.sprintf('%04s', $nextNoUrut);
+    }
+
+    //
+    function get_data_laporan($tgl1, $tgl2)
+    {
+      // $sqlBayar = mysqli_query($konek, "SELECT spp.*,siswa.nis,siswa.namasiswa,b.kelas FROM spp INNER JOIN siswa ON spp.idsiswa=siswa.idsiswa left join walikelas b on siswa.idkelas = b.idkelas WHERE tglbayar BETWEEN '$_GET[tgl1]' AND '$_GET[tgl2]' ORDER BY nobayar ASC");
+      $s = "select * from t102_pengeluaran
+        where tgl between '$tgl1' AND '$tgl2' order by nobuk asc";
+      return $this->db->query($s)->result_array();
     }
 
 }

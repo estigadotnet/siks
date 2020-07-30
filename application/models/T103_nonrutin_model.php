@@ -46,15 +46,15 @@ class T103_nonrutin_model extends CI_Model
     // get total rows
     function total_rows($q = NULL) {
         $this->db->like('idnonrutin', $q);
-	$this->db->or_like('idsiswa', $q);
-	$this->db->or_like('nobayar', $q);
-	$this->db->or_like('tglbayar', $q);
-	$this->db->or_like('idjenis', $q);
-	$this->db->or_like('nominal', $q);
-	$this->db->or_like('bayar', $q);
-	$this->db->or_like('sisa', $q);
-	$this->db->or_like('idadmin', $q);
-	$this->db->from($this->table);
+      	$this->db->or_like('idsiswa', $q);
+      	$this->db->or_like('nobayar', $q);
+      	$this->db->or_like('tglbayar', $q);
+      	$this->db->or_like('idjenis', $q);
+      	$this->db->or_like('nominal', $q);
+      	$this->db->or_like('bayar', $q);
+      	$this->db->or_like('sisa', $q);
+      	$this->db->or_like('idadmin', $q);
+      	$this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
@@ -62,15 +62,15 @@ class T103_nonrutin_model extends CI_Model
     function get_limit_data($limit, $start = 0, $q = NULL) {
         $this->db->order_by($this->id, $this->order);
         $this->db->like('idnonrutin', $q);
-	$this->db->or_like('idsiswa', $q);
-	$this->db->or_like('nobayar', $q);
-	$this->db->or_like('tglbayar', $q);
-	$this->db->or_like('idjenis', $q);
-	$this->db->or_like('nominal', $q);
-	$this->db->or_like('bayar', $q);
-	$this->db->or_like('sisa', $q);
-	$this->db->or_like('idadmin', $q);
-	$this->db->limit($limit, $start);
+      	$this->db->or_like('idsiswa', $q);
+      	$this->db->or_like('nobayar', $q);
+      	$this->db->or_like('tglbayar', $q);
+      	$this->db->or_like('idjenis', $q);
+      	$this->db->or_like('nominal', $q);
+      	$this->db->or_like('bayar', $q);
+      	$this->db->or_like('sisa', $q);
+      	$this->db->or_like('idadmin', $q);
+      	$this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }
 
