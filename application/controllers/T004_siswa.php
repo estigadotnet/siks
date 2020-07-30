@@ -108,22 +108,28 @@ class T004_siswa extends CI_Controller
 
     public function create()
     {
+        $dataNonRutin = $this->T004_siswa_model->getNonRutinAll();
         $data = array(
-            'button' => 'Create',
-            'action' => site_url('t004_siswa/create_action'),
-      	    'idsiswa' => set_value('idsiswa'),
-      	    'nis' => set_value('nis', $this->T004_siswa_model->getNewNIS()),
-      	    'namasiswa' => set_value('namasiswa'),
-      	    'idkelas' => set_value('idkelas'),
-      	    'tahunajaran' => set_value("tahunajaran", $this->session->userdata("tahunajaran")),
-      	    'byrspp' => set_value('byrspp'),
-      	    'byrcatering' => set_value('byrcatering'),
+            'button'       => 'Create',
+            'action'       => site_url('t004_siswa/create_action'),
+      	    'idsiswa'      => set_value('idsiswa'),
+      	    'nis'          => set_value('nis', $this->T004_siswa_model->getNewNIS()),
+      	    'namasiswa'    => set_value('namasiswa'),
+      	    'idkelas'      => set_value('idkelas'),
+      	    'tahunajaran'  => set_value("tahunajaran", $this->session->userdata("tahunajaran")),
+      	    'byrspp'       => set_value('byrspp'),
+      	    'byrcatering'  => set_value('byrcatering'),
       	    'byrworksheet' => set_value('byrworksheet'),
-            "head" => array(
-              "title" => "Siswa"),
-            "title" => "Siswa",
-            "dataKelas" => $this->T004_siswa_model->getKelas(),
+            "head"         => array("title" => "Siswa"),
+            "title"        => "Siswa",
+            "dataKelas"    => $this->T004_siswa_model->getKelas(),
+            "dataNonRutin" => $dataNonRutin,
       	);
+        foreach ($dataNonRutin as $r) {
+          // code menambahkan array data non rutin untuk form create dan update
+          //array_push($data, "nominal".$r->id => set_value("nominal".$r->id));
+          $data["nominal".$r->id] = set_value("nominal".$r->id);
+        } //echo "<pre>"; print_r($data); echo "</pre>";
         $this->load->view('t004_siswa/t004_siswa_form', $data);
     }
 
@@ -143,8 +149,20 @@ class T004_siswa extends CI_Controller
             		'byrcatering' => $this->input->post('byrcatering',TRUE),
             		'byrworksheet' => $this->input->post('byrworksheet',TRUE),
             );
+            $dataInputNonRutin = array();
+            $dataNonRutin = $this->T004_siswa_model->getNonRutinAll();
+            foreach ($dataNonRutin as $r) {
+              $dataInputNonRutin["nominal".$r->id] = $this->input->post("nominal".$r->id, true);
+            }
+            //$data["dataNonRutin"] = $dataNonRutin;
+            $allArray = array(
+              "data"              => $data,
+              "dataNonRutin"      => $dataNonRutin,
+              "dataInputNonRutin" => $dataInputNonRutin
+            );
 
-            $this->T004_siswa_model->insert($data);
+            //$this->T004_siswa_model->insert($data);
+            $this->T004_siswa_model->insert($allArray);
             $this->session->set_flashdata('message', 'Create Record Success');
             redirect(site_url('t004_siswa'));
         }
@@ -153,23 +171,22 @@ class T004_siswa extends CI_Controller
     public function update($id)
     {
         $row = $this->T004_siswa_model->get_by_id($id);
-
+        $dataNonRutin = $this->T004_siswa_model->get_nonRutin_by_id($id);
         if ($row) {
             $data = array(
-                'button' => 'Update',
-                'action' => site_url('t004_siswa/update_action'),
-            		'idsiswa' => set_value('idsiswa', $row->idsiswa),
-            		'nis' => set_value('nis', $row->nis),
-            		'namasiswa' => set_value('namasiswa', $row->namasiswa),
-            		'idkelas' => set_value('idkelas', $row->idkelas),
-            		'tahunajaran' => set_value('tahunajaran', $row->tahunajaran),
-            		'byrspp' => set_value('byrspp', $row->byrspp),
-            		'byrcatering' => set_value('byrcatering', $row->byrcatering),
+                'button'       => 'Update',
+                'action'       => site_url('t004_siswa/update_action'),
+            		'idsiswa'      => set_value('idsiswa', $row->idsiswa),
+            		'nis'          => set_value('nis', $row->nis),
+            		'namasiswa'    => set_value('namasiswa', $row->namasiswa),
+            		'idkelas'      => set_value('idkelas', $row->idkelas),
+            		'tahunajaran'  => set_value('tahunajaran', $row->tahunajaran),
+            		'byrspp'       => set_value('byrspp', $row->byrspp),
+            		'byrcatering'  => set_value('byrcatering', $row->byrcatering),
             		'byrworksheet' => set_value('byrworksheet', $row->byrworksheet),
-                "head" => array(
-                  "title" => "Siswa"),
-                "title" => "Siswa",
-                "dataKelas" => $this->T004_siswa_model->getKelas(),
+                "head"         => array("title" => "Siswa"),
+                "title"        => "Siswa",
+                "dataKelas"    => $this->T004_siswa_model->getKelas(),
             );
             $this->load->view('t004_siswa/t004_siswa_form', $data);
         } else {
