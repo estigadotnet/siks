@@ -28,29 +28,29 @@ class Users_model extends CI_Model
         $this->db->where($this->id, $id);
         return $this->db->get($this->table)->row();
     }
-    
+
     // get total rows
     function total_rows($q = NULL) {
         $this->db->like('id', $q);
-	$this->db->or_like('ip_address', $q);
-	$this->db->or_like('username', $q);
-	$this->db->or_like('password', $q);
-	$this->db->or_like('email', $q);
-	$this->db->or_like('activation_selector', $q);
-	$this->db->or_like('activation_code', $q);
-	$this->db->or_like('forgotten_password_selector', $q);
-	$this->db->or_like('forgotten_password_code', $q);
-	$this->db->or_like('forgotten_password_time', $q);
-	$this->db->or_like('remember_selector', $q);
-	$this->db->or_like('remember_code', $q);
-	$this->db->or_like('created_on', $q);
-	$this->db->or_like('last_login', $q);
-	$this->db->or_like('active', $q);
-	$this->db->or_like('first_name', $q);
-	$this->db->or_like('last_name', $q);
-	$this->db->or_like('company', $q);
-	$this->db->or_like('phone', $q);
-	$this->db->from($this->table);
+      	$this->db->or_like('ip_address', $q);
+      	$this->db->or_like('username', $q);
+      	$this->db->or_like('password', $q);
+      	$this->db->or_like('email', $q);
+      	$this->db->or_like('activation_selector', $q);
+      	$this->db->or_like('activation_code', $q);
+      	$this->db->or_like('forgotten_password_selector', $q);
+      	$this->db->or_like('forgotten_password_code', $q);
+      	$this->db->or_like('forgotten_password_time', $q);
+      	$this->db->or_like('remember_selector', $q);
+      	$this->db->or_like('remember_code', $q);
+      	$this->db->or_like('created_on', $q);
+      	$this->db->or_like('last_login', $q);
+      	$this->db->or_like('active', $q);
+      	$this->db->or_like('first_name', $q);
+      	$this->db->or_like('last_name', $q);
+      	$this->db->or_like('company', $q);
+      	$this->db->or_like('phone', $q);
+      	$this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
@@ -58,25 +58,25 @@ class Users_model extends CI_Model
     function get_limit_data($limit, $start = 0, $q = NULL) {
         $this->db->order_by($this->id, $this->order);
         $this->db->like('id', $q);
-	$this->db->or_like('ip_address', $q);
-	$this->db->or_like('username', $q);
-	$this->db->or_like('password', $q);
-	$this->db->or_like('email', $q);
-	$this->db->or_like('activation_selector', $q);
-	$this->db->or_like('activation_code', $q);
-	$this->db->or_like('forgotten_password_selector', $q);
-	$this->db->or_like('forgotten_password_code', $q);
-	$this->db->or_like('forgotten_password_time', $q);
-	$this->db->or_like('remember_selector', $q);
-	$this->db->or_like('remember_code', $q);
-	$this->db->or_like('created_on', $q);
-	$this->db->or_like('last_login', $q);
-	$this->db->or_like('active', $q);
-	$this->db->or_like('first_name', $q);
-	$this->db->or_like('last_name', $q);
-	$this->db->or_like('company', $q);
-	$this->db->or_like('phone', $q);
-	$this->db->limit($limit, $start);
+      	$this->db->or_like('ip_address', $q);
+      	$this->db->or_like('username', $q);
+      	$this->db->or_like('password', $q);
+      	$this->db->or_like('email', $q);
+      	$this->db->or_like('activation_selector', $q);
+      	$this->db->or_like('activation_code', $q);
+      	$this->db->or_like('forgotten_password_selector', $q);
+      	$this->db->or_like('forgotten_password_code', $q);
+      	$this->db->or_like('forgotten_password_time', $q);
+      	$this->db->or_like('remember_selector', $q);
+      	$this->db->or_like('remember_code', $q);
+      	$this->db->or_like('created_on', $q);
+      	$this->db->or_like('last_login', $q);
+      	$this->db->or_like('active', $q);
+      	$this->db->or_like('first_name', $q);
+      	$this->db->or_like('last_name', $q);
+      	$this->db->or_like('company', $q);
+      	$this->db->or_like('phone', $q);
+      	$this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }
 
