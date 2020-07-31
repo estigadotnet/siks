@@ -323,13 +323,16 @@ class T004_siswa_model extends CI_Model
           b.idjenis,
           c.id,
           c.jenis,
-          b.sisa
+          b.sisa,
+          min(b.sisa) as sisaterakhir
         from
           t004_siswa a
           left join t103_nonrutin b on a.idsiswa = b.idsiswa
           left join t005_nonrutin c on b.idjenis = c.id
         where
           a.idsiswa = ".$id."
+        group by
+          b.idjenis
         ";
       return $this->db->query($s)->result();
     }

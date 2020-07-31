@@ -124,6 +124,7 @@ class T004_siswa extends CI_Controller
             "title"        => "Siswa",
             "dataKelas"    => $this->T004_siswa_model->getKelas(),
             "dataNonRutin" => $dataNonRutin,
+            "readOnly"     => ""
       	);
         foreach ($dataNonRutin as $r) {
           // code menambahkan array data non rutin untuk form create dan update
@@ -172,6 +173,13 @@ class T004_siswa extends CI_Controller
     {
         $row = $this->T004_siswa_model->get_by_id($id);
         $dataNonRutin = $this->T004_siswa_model->get_nonRutin_by_id($id);
+        // cek jumlah record data non-rutin setup
+        $this->load->model("T005_nonrutin_model");
+        $dataNonRutinSetup = $this->T005_nonrutin_model->get_all();
+        $readOnly = "";
+        if (count($dataNonRutin) <> count($dataNonRutinSetup)) {
+          $readOnly = "readonly";
+        }
         if ($row) {
             $data = array(
                 'button'       => 'Update',
@@ -187,11 +195,12 @@ class T004_siswa extends CI_Controller
                 "head"         => array("title" => "Siswa"),
                 "title"        => "Siswa",
                 "dataKelas"    => $this->T004_siswa_model->getKelas(),
-                "dataNonRutin" => $dataNonRutin
+                "dataNonRutin" => $dataNonRutin,
+                "readOnly"     => $readOnly
             );
             foreach ($dataNonRutin as $r) {
-              $data["nominal".$r->id] = set_value("nominal".$r->id, $r->sisa);
-            }
+              $data["nominal".$r->id] = set_value("nominal".$r->id, $r->sisaterakhir);
+            } echo "<pre>"; print_r($data); echo "</pre>";
             $this->load->view('t004_siswa/t004_siswa_form', $data);
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');

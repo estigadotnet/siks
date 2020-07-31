@@ -61,13 +61,15 @@
                 <label for="int">Worksheet <?php echo form_error('byrworksheet') ?></label>
                 <input type="text" class="form-control" name="byrworksheet" id="byrworksheet" placeholder="Worksheet" value="<?php echo $byrworksheet; ?>" />
             </div>
+
             <!-- data non rutin -->
             <?php foreach ($dataNonRutin as $r): ?>
               <div class="form-group">
                   <label for="int"><?php echo $r->jenis; ?> </label>
-                  <input type="text" class="form-control" name="<?php echo 'nominal'.$r->id; ?>" id="<?php echo 'nominal'.$r->id; ?>" placeholder="Nominal" value="<?php eval('echo $nominal'.$r->id.';'); ?>" />
+                  <input type="text" class="form-control" name="<?php echo 'nominal'.$r->id; ?>" id="<?php echo 'nominal'.$r->id; ?>" placeholder="Nominal" value="<?php eval('echo $nominal'.$r->id.';'); ?>" <?php echo $readOnly; ?> />
               </div>
             <?php endforeach; ?>
+
             <div class="form-group">
               <input type="hidden" name="idsiswa" value="<?php echo $idsiswa; ?>" />
         	    <button type="submit" class="btn btn-primary"><?php echo $button ?></button>
