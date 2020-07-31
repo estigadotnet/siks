@@ -187,7 +187,11 @@ class T004_siswa extends CI_Controller
                 "head"         => array("title" => "Siswa"),
                 "title"        => "Siswa",
                 "dataKelas"    => $this->T004_siswa_model->getKelas(),
+                "dataNonRutin" => $dataNonRutin
             );
+            foreach ($dataNonRutin as $r) {
+              $data["nominal".$r->id] = set_value("nominal".$r->id, $r->sisa);
+            }
             $this->load->view('t004_siswa/t004_siswa_form', $data);
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');

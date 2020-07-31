@@ -321,6 +321,7 @@ class T004_siswa_model extends CI_Model
         select
           a.idsiswa,
           b.idjenis,
+          c.id,
           c.jenis,
           b.sisa
         from
