@@ -215,7 +215,12 @@ class T004_siswa_model extends CI_Model
     }
 
     // insert data proses naik kelas
-    function naikkelas($data) {
+    function naikkelas($allArray) {
+
+      $data = $allArray["data"];
+      // $this->db->insert($this->table, $data);
+      // $idSiswa = $this->db->insert_id();
+
       $bulanIndo = array(
         '01' => 'Januari',
         '02' => 'Februari',
@@ -259,6 +264,7 @@ class T004_siswa_model extends CI_Model
         );
 
         $this->db->insert($this->table, $data);
+
         // simpan 12 record ke tabel t101_spp
         $idSiswa = $this->db->insert_id();
         $awalTempo = substr($tahunajaranBaru, 0, 4) . "-07-01";
@@ -275,6 +281,24 @@ class T004_siswa_model extends CI_Model
           );
           $this->db->insert("t101_spp", $dataSpp);
         }
+
+        // simpan ke tabel non-rutin transaksi
+        // simpan ke tabel non rutin transaksi
+        foreach ($allArray["dataNonRutin"] as $r) {
+          // code...
+          $dataInsert = array(
+            "idsiswa"  => $idSiswa,
+            "nobayar"  => "",
+            "tglbayar" => "0000-00-00",
+            "idjenis"  => $r->id,
+            "nominal"  => $allArray["dataInputNonRutin"]["nominal".$r->id],
+            "bayar"    => 0,
+            "sisa"     => $allArray["dataInputNonRutin"]["nominal".$r->id],
+            "idadmin"  => 0
+          );
+          $this->db->insert("t103_nonrutin", $dataInsert);
+        }
+
       }
 
     }

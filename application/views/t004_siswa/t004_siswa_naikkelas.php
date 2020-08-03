@@ -77,6 +77,14 @@
           		<input type="text" class="form-control" name="worksheet" maxlength="40" />
           	</div>
 
+            <!-- data non rutin -->
+            <?php foreach ($dataNonRutin as $r): ?>
+              <div class="form-group">
+                  <label for="int"><?php echo $r->jenis; ?> </label>
+                  <input type="text" class="form-control" name="<?php echo 'nominal'.$r->id; ?>" id="<?php echo 'nominal'.$r->id; ?>" placeholder="Nominal" value="<?php eval('echo $nominal'.$r->id.';'); ?>" <?php echo $readOnly; ?> />
+              </div>
+            <?php endforeach; ?>
+
           	<button type="submit" class="btn btn-default">Proses</button>
           	<button type="button" class="btn btn-default" onclick="window.history.go(-1); return false;">Kembali</button>
           </form>

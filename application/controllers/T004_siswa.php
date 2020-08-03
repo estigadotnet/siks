@@ -10,6 +10,7 @@ class T004_siswa extends CI_Controller
         parent::__construct();
         $this->load->model('T004_siswa_model');
         $this->load->library('form_validation');
+        $this->load->model("T005_nonrutin_model");
     }
 
     public function index()
@@ -176,10 +177,8 @@ class T004_siswa extends CI_Controller
         // cek jumlah record data non-rutin setup
         $this->load->model("T005_nonrutin_model");
         $dataNonRutinSetup = $this->T005_nonrutin_model->get_all();
-        $readOnly = "";
-        if (count($dataNonRutin) <> count($dataNonRutinSetup)) {
-          $readOnly = "readonly";
-        }
+        $readOnly = "readonly";
+
         if ($row) {
             $data = array(
                 'button'       => 'Update',
@@ -358,6 +357,9 @@ class T004_siswa extends CI_Controller
       //     "dataKelas" => $this->T004_siswa_model->getKelas(),
       // );
 
+      //$dataNonRutin = $this->T005_nonrutin_model->get_all();
+      $dataNonRutin = $this->T004_siswa_model->getNonRutinAll();
+
       $data = array(
         'action'          => site_url('t004_siswa/naikkelas_action'),
         "idkelasLama"     => $idkelasLama,
@@ -366,7 +368,14 @@ class T004_siswa extends CI_Controller
         "dataTahunajaran" => $dataTahunajaran,
         "head"            => array("title" => "Naik Kelas"),
         "title"           => "Naik Kelas",
+        "dataNonRutin"    => $dataNonRutin,
+        "readOnly"     => ""
       );
+      foreach ($dataNonRutin as $r) {
+        // code menambahkan array data non rutin untuk form create dan update
+        //array_push($data, "nominal".$r->id => set_value("nominal".$r->id));
+        $data["nominal".$r->id] = set_value("nominal".$r->id);
+      } //echo "<pre>"; print_r($data); echo "</pre>";
 
       $this->load->view('t004_siswa/t004_siswa_naikkelas', $data);
     }
@@ -384,7 +393,23 @@ class T004_siswa extends CI_Controller
   			"awalTempo"       => substr($this->input->post("tahunajaranBaru", true), 0, 4)."-07-01"
       );
 
-      $this->T004_siswa_model->naikkelas($data);
+      $dataInputNonRutin = array();
+      $dataNonRutin = $this->T004_siswa_model->getNonRutinAll();
+      foreach ($dataNonRutin as $r) {
+        $dataInputNonRutin["nominal".$r->id] = $this->input->post("nominal".$r->id, true);
+      }
+      //$data["dataNonRutin"] = $dataNonRutin;
+      $allArray = array(
+        "data"              => $data,
+        "dataNonRutin"      => $dataNonRutin,
+        "dataInputNonRutin" => $dataInputNonRutin
+      );
+
+      //$this->T004_siswa_model->insert($data);
+      //$this->T004_siswa_model->insert($allArray);
+
+      //$this->T004_siswa_model->naikkelas($data);
+      $this->T004_siswa_model->naikkelas($allArray);
       redirect(site_url('t004_siswa'));
     }
 

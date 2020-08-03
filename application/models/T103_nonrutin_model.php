@@ -19,6 +19,7 @@ class T103_nonrutin_model extends CI_Model
       //$this->db->order_by($this->id, $this->order);
       $this->db->order_by("idsiswa", "asc");
       $this->db->order_by("idjenis", "asc");
+      $this->db->order_by("idnonrutin", "asc");
       $r = $this->db->get($this->table)->result();
       $aAll = array();
       $lewat = 1;
