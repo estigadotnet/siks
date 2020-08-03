@@ -177,6 +177,21 @@ class T103_nonrutin_model extends CI_Model
       return $this->db->query($s)->result();
     }
 
+    // hitung sisa
+    function hitungSisa($idSiswa, $idJenis) {
+      $nominal = 0;
+      $bayar   = 0;
+      $sisa    = 0;
+      $s = "select * from t103_nonrutin where idsiswa = ".$idSiswa." and idjenis = ".$idJenis." order by idnonrutin";
+      $rs = $this->db->query($s)->result();
+      foreach ($rs as $r) {
+        // code...
+        $sisa += $r->nominal - $r->bayar;
+        $s = "update t103_nonrutin set sisa = ".$sisa." where idnonrutin = ".$r->idnonrutin."";
+        $this->db->query($s);
+      }
+    }
+
 }
 
 /* End of file T103_nonrutin_model.php */

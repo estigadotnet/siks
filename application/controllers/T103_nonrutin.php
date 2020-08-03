@@ -157,6 +157,7 @@ class T103_nonrutin extends CI_Controller
             $q = $this->input->post('q', true);
 
             $this->T103_nonrutin_model->insert($data);
+            $this->T103_nonrutin_model->hitungSisa($data["idsiswa"], $data["idjenis"]);
             $this->session->set_flashdata('message', 'Create Record Success');
             redirect(site_url('t103_nonrutin/index?q='.$q));
         }
@@ -228,6 +229,7 @@ class T103_nonrutin extends CI_Controller
             $q = $this->input->post('q', true);
 
             $this->T103_nonrutin_model->update($this->input->post('idnonrutin', TRUE), $data);
+            $this->T103_nonrutin_model->hitungSisa($data["idsiswa"], $data["idjenis"]);
             $this->session->set_flashdata('message', 'Update Record Success');
             redirect(site_url('t103_nonrutin/index?q='.$q));
         }
@@ -239,6 +241,7 @@ class T103_nonrutin extends CI_Controller
 
         if ($row) {
             $this->T103_nonrutin_model->delete($id);
+            $this->T103_nonrutin_model->hitungSisa($row->idsiswa, $row->idjenis);
             $this->session->set_flashdata('message', 'Delete Record Success');
 
             redirect(site_url('t103_nonrutin/index?q='.$q));

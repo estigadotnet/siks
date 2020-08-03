@@ -36,7 +36,7 @@
 		//$sqlBayar = mysqli_query($konek, "SELECT spp.*,siswa.nis,siswa.namasiswa,b.kelas FROM spp INNER JOIN siswa ON spp.idsiswa=siswa.idsiswa left join walikelas b on siswa.idkelas = b.idkelas WHERE idspp='$_GET[id]' ORDER BY nobayar ASC");
 		//$d=mysqli_fetch_array($sqlBayar);
     $d = $aNonRutin; //echo "<pre>"; print_r($d); echo "</pre>";
-		$total = 0;
+
 		//$total +=$d['byrspp']+$d['byrcatering']+$d['byrworksheet'];
 		//$total +=$d->bayar;
 	?>
@@ -89,10 +89,20 @@
 			<td align="right" width="155">&nbsp;</td>
 			<td align="right" width="155">&nbsp;</td>
 		</tr>
+		<tr>
+			<td width="455">No. Bayar  / Tgl. Bayar</td>
+			<td width="0">&nbsp;</td>
+			<td width="5">&nbsp;</td>
+			<td align="right" width="155">&nbsp;</td>
+			<td align="right" width="155">&nbsp;</td>
+			<td align="right" width="155">&nbsp;</td>
+		</tr>
+		<?php $nominal = 0; $total = 0; ?>
 		<?php foreach ($aAllNonRutin as $r) { ?>
-		<?php $total +=$r->bayar; ?>
+		<?php 	$total +=$r->bayar; ?>
+		<?php 	$nominal += $r->nominal; $sisa = $r->sisa;?>
 			<tr>
-				<td width="455"><?php echo ($r->nobayar <> "" ? "No./Tgl. Bayar: ".$r->nobayar."/".date_format(date_create($r->tglbayar), "d-m-Y") : ""); ?></td>
+				<td width="455"><?php echo ($r->nobayar <> "" ? $r->nobayar." / ".date_format(date_create($r->tglbayar), "d-m-Y") : ""); ?></td>
 				<td width="0">:</td>
 				<td width="5">Rp.</td>
 				<td align="right" width="155"><?php echo number_format($r->nominal); ?></td>
@@ -121,9 +131,9 @@
 			<td align="right" width="455">Total</td>
 			<td width="0">:</td>
 			<td width="5">Rp.</td>
-			<td>&nbsp;</td>
+			<td align="right" width="155"><b><?php echo number_format($nominal); ?></b></td>
 			<td align="right" width="155"><b><?php echo number_format($total); ?></b></td>
-			<td>&nbsp;</td>
+			<td align="right" width="155"><b><?php echo number_format($sisa); ?></b></td>
 		</tr>
 	</table>
 
