@@ -94,6 +94,81 @@ class T103_nonrutin_model extends CI_Model
         $this->db->delete($this->table);
     }
 
+    // get total rows nis
+    function total_rows_nis($q = NULL)
+    {
+        $s = "select idsiswa from t004_siswa where nis = '".$q."'";
+        $query = $this->db->query($s);
+        if ($query->num_rows() == 0) {
+          //echo $query->num_rows();
+          return 0;
+        }
+        $query = $this->db->query($s)->result();
+        $aIdsiswa = array();
+        foreach ($query as $row ) {
+          $aIdsiswa[] = $row->idsiswa;
+        }
+        //echo "<pre>"; print_r($aIdsiswa); echo "</pre>";
+        $this->db->where_in("idsiswa", $aIdsiswa);
+        $this->db->from($this->table);
+        return $this->db->count_all_results();
+    }
+
+    // get data with limit and search berdasarkan nis
+    function get_limit_data_nis($limit, $start = 0, $q = NULL)
+    {
+        $s = "select idsiswa from t004_siswa where nis = '".$q."'";
+        $query = $this->db->query($s);
+        if ($query->num_rows() == 0) {
+          //echo $query->num_rows();
+          return 0;
+        }
+        $query = $this->db->query($s)->result();
+        $aIdsiswa = array();
+        foreach ($query as $row) {
+          $aIdsiswa[] = $row->idsiswa;
+        }
+
+        //$this->db->order_by("jatuhtempo", "asc");
+        // $this->db->like('idspp', $q);
+        $this->db->order_by("idsiswa, idjenis, idnonrutin");
+        $this->db->limit($limit, $start);
+        $this->db->where_in("idsiswa", $aIdsiswa);
+        return $this->db->get($this->table)->result();
+    }
+
+    //
+    function getSiswa($nis)
+    {
+        $q = $this->db->query("select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where nis = '".$nis."' and tahunajaran = '".$this->session->userdata("tahunajaran")."'");
+        return $q->result_array();
+    }
+
+    // ambil data tahun ajaran siswa
+    function getSiswaTA($q) {
+      $s = "select idsiswa, tahunajaran, kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where nis = '".$q."'";
+      $query = $this->db->query($s);
+      if ($query->num_rows() == 0) {
+        //echo $query->num_rows();
+        return 0;
+      }
+      $query = $this->db->query($s)->result();
+      $aIdsiswaTA = array();
+      foreach ($query as $row) {
+        $aIdsiswaTA[$row->idsiswa] = array($row->tahunajaran, $row->kelas);
+      }
+
+      return $aIdsiswaTA;
+    }
+
+    //
+    function getMaxNoBayar()
+    {
+        $today = date("ymd");
+        $q = $this->db->query("select max(nobayar) as last from t103_nonrutin where nobayar like '$today%'");
+        return $q->row_array();
+    }
+
 }
 
 /* End of file T103_nonrutin_model.php */

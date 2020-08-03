@@ -144,6 +144,12 @@
               </a>
             </li>
             <li class="nav-item">
+              <a href="<?php echo site_url(); ?>t103_nonrutin" class="nav-link">
+                <i class="fas fa-file-invoice nav-icon"></i>
+                <p>Pembayaran Non-Rutin</p>
+              </a>
+            </li>
+            <li class="nav-item">
               <a href="<?php echo site_url(); ?>t102_pengeluaran" class="nav-link">
                 <i class="fas fa-shopping-cart nav-icon"></i>
                 <p>Belanja Sekolah</p>

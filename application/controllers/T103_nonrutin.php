@@ -10,40 +10,62 @@ class T103_nonrutin extends CI_Controller
         parent::__construct();
         $this->load->model('T103_nonrutin_model');
         $this->load->library('form_validation');
+        $this->load->model("T005_nonrutin_model");
+        $this->load->model("T004_siswa_model");
     }
 
     public function index()
     {
         $q = urldecode($this->input->get('q', TRUE));
         $start = intval($this->input->get('start'));
-        
+
+        $config['per_page'] = 12;
+        $config['page_query_string'] = TRUE;
+
+        $dataSiswa    = 0;
+        $dataSiswaTA  = 0;
+        $dataNonRutin = 0;
+
         if ($q <> '') {
             $config['base_url'] = base_url() . 't103_nonrutin/index.html?q=' . urlencode($q);
             $config['first_url'] = base_url() . 't103_nonrutin/index.html?q=' . urlencode($q);
+            $config['total_rows'] = $this->T103_nonrutin_model->total_rows_nis($q);
+            $t103_nonrutin = $this->T103_nonrutin_model->get_limit_data_nis($config['per_page'], $start, $q);
+            $dataSiswa = $this->T103_nonrutin_model->getSiswa($q); //echo "<pre>"; print_r($dataSiswa); echo "</pre>";
+            $dataSiswaTA = $this->T103_nonrutin_model->getSiswaTA($q); //echo "<pre>"; print_r($dataSiswaTA); echo "</pre>";
+            if ($t103_nonrutin == 0) $q = "";
+            $dataNonRutin = $this->T005_nonrutin_model->get_all(); //echo "<pre>"; print_r($dataNonRutin); echo "</pre>";
         } else {
             $config['base_url'] = base_url() . 't103_nonrutin/index.html';
             $config['first_url'] = base_url() . 't103_nonrutin/index.html';
+            $config['total_rows'] = $this->T103_nonrutin_model->total_rows($q);
+            $t103_nonrutin = $this->T103_nonrutin_model->get_limit_data($config['per_page'], $start, $q);
         }
 
-        $config['per_page'] = 10;
-        $config['page_query_string'] = TRUE;
-        $config['total_rows'] = $this->T103_nonrutin_model->total_rows($q);
-        $t103_nonrutin = $this->T103_nonrutin_model->get_limit_data($config['per_page'], $start, $q);
+        // $config['per_page'] = 10;
+        // $config['page_query_string'] = TRUE;
+        // $config['total_rows'] = $this->T103_nonrutin_model->total_rows($q);
+        // $t103_nonrutin = $this->T103_nonrutin_model->get_limit_data($config['per_page'], $start, $q);
 
         $this->load->library('pagination');
         $this->pagination->initialize($config);
 
         $data = array(
             't103_nonrutin_data' => $t103_nonrutin,
-            'q' => $q,
-            'pagination' => $this->pagination->create_links(),
-            'total_rows' => $config['total_rows'],
-            'start' => $start,
+            'q'                  => $q,
+            'pagination'         => $this->pagination->create_links(),
+            'total_rows'         => $config['total_rows'],
+            'start'              => $start,
+            "head"               => array("title" => "Pembayaran Non-Rutin"),
+            "title"              => "Pembayaran Non-Rutin",
+            "dataSiswa"          => $dataSiswa,
+            "dataSiswaTA"        => $dataSiswaTA,
+            "dataNonRutin"       => $dataNonRutin,
         );
         $this->load->view('t103_nonrutin/t103_nonrutin_list', $data);
     }
 
-    public function read($id) 
+    public function read($id)
     {
         $row = $this->T103_nonrutin_model->get_by_id($id);
         if ($row) {
@@ -65,25 +87,56 @@ class T103_nonrutin extends CI_Controller
         }
     }
 
-    public function create() 
+    public function create($q)
     {
-        $data = array(
-            'button' => 'Create',
-            'action' => site_url('t103_nonrutin/create_action'),
-	    'idnonrutin' => set_value('idnonrutin'),
-	    'idsiswa' => set_value('idsiswa'),
-	    'nobayar' => set_value('nobayar'),
-	    'tglbayar' => set_value('tglbayar'),
-	    'idjenis' => set_value('idjenis'),
-	    'nominal' => set_value('nominal'),
-	    'bayar' => set_value('bayar'),
-	    'sisa' => set_value('sisa'),
-	    'idadmin' => set_value('idadmin'),
-	);
-        $this->load->view('t103_nonrutin/t103_nonrutin_form', $data);
+      // ambil data siswa: idsiswa dan tahun ajaran
+      $dataSiswa = $this->T004_siswa_model->getAllByNis($q); //echo "<pre>"; print_r($dataSiswa); echo "</pre>";
+      foreach ($dataSiswa as $r) {
+        // code...
+        $aSiswa[$r->idsiswa] = $r->tahunajaran;
+      } //echo "<pre>"; print_r($aSiswa); echo "</pre>";
+
+      // ambil jenis non rutin
+      $dataNonRutin = $this->T005_nonrutin_model->get_all(); //echo "<pre>"; print_r($dataNonRutin); echo "</pre>";
+      foreach ($dataNonRutin as $r) {
+        // code...
+        $aNonRutin[$r->id] = $r->Jenis;
+      } //echo "<pre>"; print_r($aNonRutin); echo "</pre>";
+
+      //membuat nomor bayar
+      $today = date("ymd");
+      $data = $this->T103_nonrutin_model->getMaxNoBayar();
+      $lastNoBayar = $data['last'];
+      $lastNoUrut = substr($lastNoBayar, 6, 4);
+      $nextNoUrut = $lastNoUrut + 1;
+      $nextNoBayar = $today.sprintf('%04s', $nextNoUrut);
+
+      //tanggal Bayar
+      $tglBayar = date('Y-m-d');
+
+      $data = array(
+        'button'     => 'Create',
+        'action'     => site_url('t103_nonrutin/create_action'),
+  	    'idnonrutin' => set_value('idnonrutin'),
+  	    'idsiswa'    => set_value('idsiswa'),
+  	    'nobayar'    => set_value('nobayar', $nextNoBayar),
+  	    'tglbayar'   => set_value('tglbayar', $tglBayar),
+  	    'idjenis'    => set_value('idjenis'),
+  	    'nominal'    => set_value('nominal', 0),
+  	    'bayar'      => set_value('bayar'),
+  	    //'sisa'       => set_value('sisa'),
+  	    //'idadmin'    => set_value('idadmin'),
+        "head"       => array("title" => "Pembayaran Non-Rutin"),
+        "title"      => "Pembayaran Non-Rutin",
+        "aSiswa"     => $aSiswa,
+        "aNonRutin"  => $aNonRutin,
+        "q"          => $q,
+        "readOnly"   => "readonly",
+      );
+      $this->load->view('t103_nonrutin/t103_nonrutin_form', $data);
     }
-    
-    public function create_action() 
+
+    public function create_action()
     {
         $this->_rules();
 
@@ -91,48 +144,70 @@ class T103_nonrutin extends CI_Controller
             $this->create();
         } else {
             $data = array(
-		'idsiswa' => $this->input->post('idsiswa',TRUE),
-		'nobayar' => $this->input->post('nobayar',TRUE),
-		'tglbayar' => $this->input->post('tglbayar',TRUE),
-		'idjenis' => $this->input->post('idjenis',TRUE),
-		'nominal' => $this->input->post('nominal',TRUE),
-		'bayar' => $this->input->post('bayar',TRUE),
-		'sisa' => $this->input->post('sisa',TRUE),
-		'idadmin' => $this->input->post('idadmin',TRUE),
-	    );
+          		'idsiswa' => $this->input->post('idsiswa',TRUE),
+          		'nobayar' => $this->input->post('nobayar',TRUE),
+          		'tglbayar' => $this->input->post('tglbayar',TRUE),
+          		'idjenis' => $this->input->post('idjenis',TRUE),
+          		'nominal' => 0,
+          		'bayar' => $this->input->post('bayar',TRUE),
+          		'sisa' => 0,
+          		'idadmin' => $this->session->userdata("user_id"),
+            );
+
+            $q = $this->input->post('q', true);
 
             $this->T103_nonrutin_model->insert($data);
             $this->session->set_flashdata('message', 'Create Record Success');
-            redirect(site_url('t103_nonrutin'));
+            redirect(site_url('t103_nonrutin/index?q='.$q));
         }
     }
-    
-    public function update($id) 
+
+    public function update($id, $q)
     {
+        // ambil data siswa: idsiswa dan tahun ajaran
+        $dataSiswa = $this->T004_siswa_model->getAllByNis($q); //echo "<pre>"; print_r($dataSiswa); echo "</pre>";
+        foreach ($dataSiswa as $r) {
+          // code...
+          $aSiswa[$r->idsiswa] = $r->tahunajaran;
+        } //echo "<pre>"; print_r($aSiswa); echo "</pre>";
+
+        // ambil jenis non rutin
+        $dataNonRutin = $this->T005_nonrutin_model->get_all(); //echo "<pre>"; print_r($dataNonRutin); echo "</pre>";
+        foreach ($dataNonRutin as $r) {
+          // code...
+          $aNonRutin[$r->id] = $r->Jenis;
+        } //echo "<pre>"; print_r($aNonRutin); echo "</pre>";
+
         $row = $this->T103_nonrutin_model->get_by_id($id);
 
         if ($row) {
-            $data = array(
-                'button' => 'Update',
-                'action' => site_url('t103_nonrutin/update_action'),
-		'idnonrutin' => set_value('idnonrutin', $row->idnonrutin),
-		'idsiswa' => set_value('idsiswa', $row->idsiswa),
-		'nobayar' => set_value('nobayar', $row->nobayar),
-		'tglbayar' => set_value('tglbayar', $row->tglbayar),
-		'idjenis' => set_value('idjenis', $row->idjenis),
-		'nominal' => set_value('nominal', $row->nominal),
-		'bayar' => set_value('bayar', $row->bayar),
-		'sisa' => set_value('sisa', $row->sisa),
-		'idadmin' => set_value('idadmin', $row->idadmin),
-	    );
-            $this->load->view('t103_nonrutin/t103_nonrutin_form', $data);
+          $data = array(
+            'button' => 'Update',
+            'action' => site_url('t103_nonrutin/update_action'),
+        		'idnonrutin' => set_value('idnonrutin', $row->idnonrutin),
+        		'idsiswa' => set_value('idsiswa', $row->idsiswa),
+        		'nobayar' => set_value('nobayar', $row->nobayar),
+        		'tglbayar' => set_value('tglbayar', $row->tglbayar),
+        		'idjenis' => set_value('idjenis', $row->idjenis),
+        		'nominal' => set_value('nominal', $row->nominal),
+        		'bayar' => set_value('bayar', $row->bayar),
+        		//'sisa' => set_value('sisa', $row->sisa),
+        		//'idadmin' => set_value('idadmin', $row->idadmin),
+            "head"       => array("title" => "Pembayaran Non-Rutin"),
+            "title"      => "Pembayaran Non-Rutin",
+            "aSiswa"     => $aSiswa,
+            "aNonRutin"  => $aNonRutin,
+            "q"          => $q,
+            "readOnly"   => "",
+          );
+          $this->load->view('t103_nonrutin/t103_nonrutin_form', $data);
         } else {
-            $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url('t103_nonrutin'));
+          $this->session->set_flashdata('message', 'Record Not Found');
+          redirect(site_url('t103_nonrutin'));
         }
     }
-    
-    public function update_action() 
+
+    public function update_action()
     {
         $this->_rules();
 
@@ -140,46 +215,49 @@ class T103_nonrutin extends CI_Controller
             $this->update($this->input->post('idnonrutin', TRUE));
         } else {
             $data = array(
-		'idsiswa' => $this->input->post('idsiswa',TRUE),
-		'nobayar' => $this->input->post('nobayar',TRUE),
-		'tglbayar' => $this->input->post('tglbayar',TRUE),
-		'idjenis' => $this->input->post('idjenis',TRUE),
-		'nominal' => $this->input->post('nominal',TRUE),
-		'bayar' => $this->input->post('bayar',TRUE),
-		'sisa' => $this->input->post('sisa',TRUE),
-		'idadmin' => $this->input->post('idadmin',TRUE),
-	    );
+          		'idsiswa' => $this->input->post('idsiswa',TRUE),
+          		'nobayar' => $this->input->post('nobayar',TRUE),
+          		'tglbayar' => $this->input->post('tglbayar',TRUE),
+          		'idjenis' => $this->input->post('idjenis',TRUE),
+          		'nominal' => $this->input->post('nominal',TRUE),
+          		'bayar' => $this->input->post('bayar',TRUE),
+          		'sisa' => $this->input->post('sisa',TRUE),
+          		'idadmin' => $this->session->userdata("user_id"),
+            );
+
+            $q = $this->input->post('q', true);
 
             $this->T103_nonrutin_model->update($this->input->post('idnonrutin', TRUE), $data);
             $this->session->set_flashdata('message', 'Update Record Success');
-            redirect(site_url('t103_nonrutin'));
+            redirect(site_url('t103_nonrutin/index?q='.$q));
         }
     }
-    
-    public function delete($id) 
+
+    public function delete($id, $q)
     {
         $row = $this->T103_nonrutin_model->get_by_id($id);
 
         if ($row) {
             $this->T103_nonrutin_model->delete($id);
             $this->session->set_flashdata('message', 'Delete Record Success');
-            redirect(site_url('t103_nonrutin'));
+
+            redirect(site_url('t103_nonrutin/index?q='.$q));
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
             redirect(site_url('t103_nonrutin'));
         }
     }
 
-    public function _rules() 
+    public function _rules()
     {
 	$this->form_validation->set_rules('idsiswa', 'idsiswa', 'trim|required');
 	$this->form_validation->set_rules('nobayar', 'nobayar', 'trim|required');
 	$this->form_validation->set_rules('tglbayar', 'tglbayar', 'trim|required');
 	$this->form_validation->set_rules('idjenis', 'idjenis', 'trim|required');
-	$this->form_validation->set_rules('nominal', 'nominal', 'trim|required');
+	// $this->form_validation->set_rules('nominal', 'nominal', 'trim|required');
 	$this->form_validation->set_rules('bayar', 'bayar', 'trim|required');
-	$this->form_validation->set_rules('sisa', 'sisa', 'trim|required');
-	$this->form_validation->set_rules('idadmin', 'idadmin', 'trim|required');
+	// $this->form_validation->set_rules('sisa', 'sisa', 'trim|required');
+	// $this->form_validation->set_rules('idadmin', 'idadmin', 'trim|required');
 
 	$this->form_validation->set_rules('idnonrutin', 'idnonrutin', 'trim');
 	$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
@@ -207,30 +285,30 @@ class T103_nonrutin extends CI_Controller
 
         $kolomhead = 0;
         xlsWriteLabel($tablehead, $kolomhead++, "No");
-	xlsWriteLabel($tablehead, $kolomhead++, "Idsiswa");
-	xlsWriteLabel($tablehead, $kolomhead++, "Nobayar");
-	xlsWriteLabel($tablehead, $kolomhead++, "Tglbayar");
-	xlsWriteLabel($tablehead, $kolomhead++, "Idjenis");
-	xlsWriteLabel($tablehead, $kolomhead++, "Nominal");
-	xlsWriteLabel($tablehead, $kolomhead++, "Bayar");
-	xlsWriteLabel($tablehead, $kolomhead++, "Sisa");
-	xlsWriteLabel($tablehead, $kolomhead++, "Idadmin");
+      	xlsWriteLabel($tablehead, $kolomhead++, "Idsiswa");
+      	xlsWriteLabel($tablehead, $kolomhead++, "Nobayar");
+      	xlsWriteLabel($tablehead, $kolomhead++, "Tglbayar");
+      	xlsWriteLabel($tablehead, $kolomhead++, "Idjenis");
+      	xlsWriteLabel($tablehead, $kolomhead++, "Nominal");
+      	xlsWriteLabel($tablehead, $kolomhead++, "Bayar");
+      	xlsWriteLabel($tablehead, $kolomhead++, "Sisa");
+      	xlsWriteLabel($tablehead, $kolomhead++, "Idadmin");
 
-	foreach ($this->T103_nonrutin_model->get_all() as $data) {
+      	foreach ($this->T103_nonrutin_model->get_all() as $data) {
             $kolombody = 0;
 
             //ubah xlsWriteLabel menjadi xlsWriteNumber untuk kolom numeric
             xlsWriteNumber($tablebody, $kolombody++, $nourut);
-	    xlsWriteNumber($tablebody, $kolombody++, $data->idsiswa);
-	    xlsWriteLabel($tablebody, $kolombody++, $data->nobayar);
-	    xlsWriteLabel($tablebody, $kolombody++, $data->tglbayar);
-	    xlsWriteNumber($tablebody, $kolombody++, $data->idjenis);
-	    xlsWriteNumber($tablebody, $kolombody++, $data->nominal);
-	    xlsWriteNumber($tablebody, $kolombody++, $data->bayar);
-	    xlsWriteNumber($tablebody, $kolombody++, $data->sisa);
-	    xlsWriteNumber($tablebody, $kolombody++, $data->idadmin);
+      	    xlsWriteNumber($tablebody, $kolombody++, $data->idsiswa);
+      	    xlsWriteLabel($tablebody, $kolombody++, $data->nobayar);
+      	    xlsWriteLabel($tablebody, $kolombody++, $data->tglbayar);
+      	    xlsWriteNumber($tablebody, $kolombody++, $data->idjenis);
+      	    xlsWriteNumber($tablebody, $kolombody++, $data->nominal);
+      	    xlsWriteNumber($tablebody, $kolombody++, $data->bayar);
+      	    xlsWriteNumber($tablebody, $kolombody++, $data->sisa);
+      	    xlsWriteNumber($tablebody, $kolombody++, $data->idadmin);
 
-	    $tablebody++;
+      	    $tablebody++;
             $nourut++;
         }
 
@@ -247,7 +325,7 @@ class T103_nonrutin extends CI_Controller
             't103_nonrutin_data' => $this->T103_nonrutin_model->get_all(),
             'start' => 0
         );
-        
+
         $this->load->view('t103_nonrutin/t103_nonrutin_doc',$data);
     }
 

@@ -200,7 +200,7 @@ class T004_siswa extends CI_Controller
             );
             foreach ($dataNonRutin as $r) {
               $data["nominal".$r->id] = set_value("nominal".$r->id, $r->sisaterakhir);
-            } echo "<pre>"; print_r($data); echo "</pre>";
+            } //echo "<pre>"; print_r($data); echo "</pre>";
             $this->load->view('t004_siswa/t004_siswa_form', $data);
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');

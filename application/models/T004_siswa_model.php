@@ -343,6 +343,12 @@ class T004_siswa_model extends CI_Model
       return $this->db->query($s)->result();
     }
 
+    // get data siswa by nis
+    function getAllByNis($nis) {
+      $s = "select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where nis = '".$nis."'";
+      return $this->db->query($s)->result();
+    }
+
 }
 
 /* End of file T004_siswa_model.php */

@@ -44,6 +44,11 @@ class T000_sekolah extends CI_Controller
             ),
             "title" => "Sekolah",
         );
+
+        if (!$this->ion_auth->logged_in()) {
+            redirect('/auth', 'refresh');
+        }
+        
         $this->load->view('t000_sekolah/t000_sekolah_list', $data);
     }
 

@@ -105,7 +105,7 @@
             <?php foreach ($t101_spp_data as $t101_spp) { ?>
             <tr>
         			<td width="80px"><?php echo ++$start ?></td>
-        			<!-- <td><?php echo $t101_spp->idsiswa ?></td> -->
+        			<!-- <td><?php //echo $t101_spp->idsiswa ?></td> -->
               <td><?php echo $t101_spp->bulan ?></td>
         			<td><?php echo date_format(date_create($t101_spp->jatuhtempo), "d-m-Y") ?></td>
         			<td><?php echo $t101_spp->nobayar ?></td>
