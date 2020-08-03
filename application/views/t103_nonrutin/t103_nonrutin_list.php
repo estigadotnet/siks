@@ -129,7 +129,7 @@
                 echo anchor(site_url('t103_nonrutin/update/'.$t103_nonrutin->idnonrutin.'/'.$q), 'Update', 'class="btn btn-primary btn-sm"'); echo "&nbsp;";
         				echo anchor(site_url('t103_nonrutin/delete/'.$t103_nonrutin->idnonrutin.'/'.$q), 'Delete', 'onclick="javasciprt: return confirm(\'Are You Sure ?\')" class="btn btn-primary btn-sm"'); echo "&nbsp;";
                 if ($t103_nonrutin->bayar <> 0) {
-                  echo anchor(site_url('t103_nonrutin/cetak?idnonrutin='.$t103_nonrutin->idnonrutin."&q=".$q), 'Cetak', "class='btn btn-info btn-sm' target='blank'"); echo "&nbsp;";
+                  echo anchor(site_url('t103_nonrutin/cetak?idNonRutin='.$t103_nonrutin->idnonrutin."&q=".$q), 'Cetak', "class='btn btn-info btn-sm' target='blank'"); echo "&nbsp;";
                 }
         				// echo anchor(site_url('t103_nonrutin/read/'.$t103_nonrutin->idnonrutin),'Read');
         				// echo ' | ';

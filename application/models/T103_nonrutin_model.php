@@ -169,6 +169,14 @@ class T103_nonrutin_model extends CI_Model
         return $q->row_array();
     }
 
+    // get all data by id
+    function getAllById($idNonRutin) {
+      $s = "select * from t103_nonrutin where idnonrutin = ".$idNonRutin."";
+      $r = $this->db->query($s)->row();
+      $s = "select * from t103_nonrutin where idsiswa = ".$r->idsiswa." and idjenis = ".$r->idjenis." order by idnonrutin";
+      return $this->db->query($s)->result();
+    }
+
 }
 
 /* End of file T103_nonrutin_model.php */

@@ -329,6 +329,29 @@ class T103_nonrutin extends CI_Controller
         $this->load->view('t103_nonrutin/t103_nonrutin_doc',$data);
     }
 
+    // cetak bukti pembayaran
+    public function cetak()
+    {
+        if (!$this->ion_auth->logged_in()) {
+            redirect('/auth', 'refresh');
+        }
+
+        $q = urldecode($this->input->get('q', TRUE));
+        //$dataSiswa = $this->T103_nonrutin_model->getSiswa($q);
+        $idNonRutin = urldecode($this->input->get('idNonRutin', TRUE));
+        $aNonRutin = $this->T103_nonrutin_model->get_by_id($idNonRutin); //echo "<pre>"; print_r($aNonRutin); echo "</pre>";
+        $aJenisNonRutin = $this->T005_nonrutin_model->get_by_id($aNonRutin->idjenis); //echo "<pre>"; print_r($aJenisNonRutin); echo "</pre>";
+        $aSiswa = $this->T103_nonrutin_model->getSiswa($q);
+        $aAllNonRutin = $this->T103_nonrutin_model->getAllById($idNonRutin);
+        $data = array(
+          "aNonRutin"      => $aNonRutin,
+          "aSiswa"         => $aSiswa,
+          "aJenisNonRutin" => $aJenisNonRutin,
+          "aAllNonRutin"   => $aAllNonRutin,
+        );
+        $this->load->view("t103_nonrutin/t103_nonrutin_invoice", $data);
+    }
+
 }
 
 /* End of file T103_nonrutin.php */
