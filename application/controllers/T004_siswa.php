@@ -19,7 +19,7 @@ class T004_siswa extends CI_Controller
         $start = intval($this->input->get('start'));
         $idkelas = urldecode($this->input->get('idkelas', TRUE));
 
-        $config['per_page'] = 10;
+        $config['per_page'] = 1000000;
         $config['page_query_string'] = TRUE;
         // $config['total_rows'] = $this->T004_siswa_model->total_rows($q);
 

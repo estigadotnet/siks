@@ -25,6 +25,11 @@ class Mutasi_model extends CI_Model {
     $r = $this->db->query($q)->row();
     $saldoawal += $r->totalspp;
 
+    // ambil pembayaran non-rutin sebelum tgl1
+    $q = "select sum(bayar) as totalnonrutin from t103_nonrutin where tglbayar >= '".$tglawalperiode."' and tglbayar < '".$tgl1."'";
+    $r = $this->db->query($q)->row();
+    $saldoawal += $r->totalnonrutin;
+
     // ambil pengeluaran sebelum tgl1
     $q = "select sum(jumlah) as totalbelanja from t102_pengeluaran where tgl >= '".$tglawalperiode."' and tgl < '".$tgl1."'";
     $r = $this->db->query($q)->row();
@@ -37,9 +42,11 @@ class Mutasi_model extends CI_Model {
       select * from (
       select '".$tglsaldoawal."' as tgl, 'Saldo' as keterangan, ".$saldoawal." as debet, 0 as kredit, ".$saldoawal." as saldo
       union
-      select tglbayar, concat('No. Bayar: ',nobayar), byrspp, 0, 0 from t101_spp where tglbayar between '".$tgl1."' and '".$tgl2."'
+      select tglbayar, concat('No. Bayar SPP: ',nobayar), byrspp, 0, 0 from t101_spp where tglbayar between '".$tgl1."' and '".$tgl2."'
       union
-      select tgl, concat('No. Bukti: ', nobuk), 0, jumlah, 0 from t102_pengeluaran where tgl between '".$tgl1."' and '".$tgl2."'
+      select tglbayar, concat('No. Bayar Non-Rutin: ',nobayar), bayar, 0, 0 from t103_nonrutin where tglbayar between '".$tgl1."' and '".$tgl2."'
+      union
+      select tgl, concat('No. Bukti Pengeluaran: ', nobuk), 0, jumlah, 0 from t102_pengeluaran where tgl between '".$tgl1."' and '".$tgl2."'
       ) a
       order by tgl
     ";

@@ -75,7 +75,7 @@
             </tr>
             <?php foreach ($t004_siswa_data as $t004_siswa) { ?>
             <tr>
-        			<td width="80px"><?php echo ++$start ?></td>
+        			<td width="2%"><?php echo ++$start ?></td>
         			<td><?php echo $t004_siswa->nis ?></td>
         			<td><?php echo $t004_siswa->namasiswa ?></td>
         			<td><?php echo $t004_siswa->kelas ?></td>
@@ -90,7 +90,7 @@
               <td><?php echo (substr($t004_siswa->kelas, 0, 1) > 1 ? $nonRutinTrans[$t004_siswa->idsiswa][$i] : 0); ?></td>
                 <?php
               } ?>
-        			<td style="text-align:center" width="200px">
+        			<td style="text-align:center" width="15%">
         				<?php
         				echo anchor(site_url('t004_siswa/read/'.$t004_siswa->idsiswa),'Read');
         				echo ' | ';
@@ -109,7 +109,7 @@
           		<?php //echo anchor(site_url('t004_siswa/word'), 'Word', 'class="btn btn-primary"'); ?>
             </div>
             <div class="col-md-6 text-right">
-              <?php echo $pagination ?>
+              <?php //echo $pagination ?>
             </div>
           </div>
 
