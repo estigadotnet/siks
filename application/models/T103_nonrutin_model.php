@@ -192,6 +192,18 @@ class T103_nonrutin_model extends CI_Model
       }
     }
 
+    //
+    function get_data_laporan($tgl1, $tgl2)
+    {
+      // $sqlBayar = mysqli_query($konek, "SELECT spp.*,siswa.nis,siswa.namasiswa,b.kelas FROM spp INNER JOIN siswa ON spp.idsiswa=siswa.idsiswa left join walikelas b on siswa.idkelas = b.idkelas WHERE tglbayar BETWEEN '$_GET[tgl1]' AND '$_GET[tgl2]' ORDER BY nobayar ASC");
+      $s = "select a.*, nis, namasiswa, kelas, jenis from t103_nonrutin a
+        inner join t004_siswa b on a.idsiswa = b.idsiswa
+        left join t003_kelas c on b.idkelas = c.idkelas
+        left join t005_nonrutin d on a.idjenis = d.id
+        where tglbayar between '$tgl1' AND '$tgl2' order by nobayar asc"; //echo $s;
+      return $this->db->query($s)->result_array();
+    }
+
 }
 
 /* End of file T103_nonrutin_model.php */

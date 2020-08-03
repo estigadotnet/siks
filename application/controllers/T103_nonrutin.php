@@ -355,6 +355,62 @@ class T103_nonrutin extends CI_Controller
         $this->load->view("t103_nonrutin/t103_nonrutin_invoice", $data);
     }
 
+    // cetak laporan ke layar
+    public function laporan()
+    {
+      $q             = urldecode($this->input->post('q', TRUE));
+      $tgl1          = "";
+      $tgl2          = "";
+      $t103_nonrutin = 0;
+
+      if ($q <> '') {
+        $tglInput1 = substr($q, 0, 10);
+        $tglInput2 = substr($q, 13, 10);
+        $tgl1 = substr($tglInput1, 6, 4) . "-" . substr($tglInput1, 0, 2) . "-" . substr($tglInput1, 3, 2);
+        $tgl2 = substr($tglInput2, 6, 4) . "-" . substr($tglInput2, 0, 2) . "-" . substr($tglInput2, 3, 2);
+        //$dataByr = $this->T101_spp_model->get_data_bayar($tglByr1, $tglByr2);
+        $t103_nonrutin = $this->T103_nonrutin_model->get_data_laporan($tgl1, $tgl2);
+        if ($t103_nonrutin == 0) $q = "";
+      }
+
+      $data = array(
+        "q"             => $q,
+        't103_nonrutin_data' => $t103_nonrutin,
+        "tgl1"          => $tgl1,
+        "tgl2"          => $tgl2,
+        "head"          => array("title" => "Laporan Pembayaran Non-Rutin"),
+        "title"         => "Laporan Pembayaran Non-Rutin",
+      );
+
+      if (!$this->ion_auth->logged_in()) {
+          redirect('/auth', 'refresh');
+      }
+
+      $this->load->view("t103_nonrutin/t103_nonrutin_laporan", $data);
+    }
+
+    // cetak laporan ke xls
+    public function laporan_xls()
+    {
+      if (!$this->ion_auth->logged_in()) {
+          redirect('/auth', 'refresh');
+      }
+
+      // echo $this->input->post('tglBayar',TRUE);
+      $tgl  = urldecode($this->input->get('tglBayar', TRUE));
+      $tgl1 = substr($tgl, 0, 10);
+      $tgl2 = substr($tgl, 13, 10);
+      $tglByr1 = substr($tgl1, 6, 4) . "-" . substr($tgl1, 0, 2) . "-" . substr($tgl1, 3, 2);
+      $tglByr2 = substr($tgl2, 6, 4) . "-" . substr($tgl2, 0, 2) . "-" . substr($tgl2, 3, 2);
+      $dataByr = $this->T103_nonrutin_model->get_data_laporan($tglByr1, $tglByr2);
+      $data = array(
+        "aDataByr" => $dataByr,
+        "tgl1"     => $tglByr1,
+        "tgl2"     => $tglByr2
+      );
+      $this->load->view("t103_nonrutin/t103_nonrutin_laporan_xls", $data);
+    }
+
 }
 
 /* End of file T103_nonrutin.php */

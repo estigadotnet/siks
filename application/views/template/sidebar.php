@@ -184,6 +184,12 @@
               </a>
             </li>
             <li class="nav-item">
+              <a href="<?php echo site_url(); ?>t103_nonrutin/laporan" class="nav-link">
+                <i class="fas fa-list-alt nav-icon"></i>
+                <p>Pembayaran Non-Rutin</p>
+              </a>
+            </li>
+            <li class="nav-item">
               <a href="<?php echo site_url(); ?>t102_pengeluaran/laporan" class="nav-link">
                 <i class="fas fa-cash-register nav-icon"></i>
                 <p>Belanja Sekolah</p>
