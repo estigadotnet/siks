@@ -97,6 +97,8 @@
         				echo anchor(site_url('t004_siswa/update/'.$t004_siswa->idsiswa),'Update');
         				echo ' | ';
         				echo anchor(site_url('t004_siswa/delete/'.$t004_siswa->idsiswa),'Delete','onclick="javasciprt: return confirm(\'Are You Sure ?\')"');
+						echo ' | ';
+        				echo anchor(site_url('t101_spp/index?q='.$t004_siswa->nis),'Bayar');
         				?>
         			</td>
         		</tr>
