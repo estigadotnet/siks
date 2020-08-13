@@ -12,6 +12,7 @@ class T101_spp extends CI_Controller
         $this->load->library('form_validation');
     }
 
+
     // cetak tunggakan ke xls
     public function tunggakan_tgl_xls()
     {
@@ -33,6 +34,7 @@ class T101_spp extends CI_Controller
       );
       $this->load->view("t101_spp/t101_spp_tunggakan_tgl_xls", $data);
     }
+
 
     // cetak tunggakan ke layar
     public function tunggakan_tgl()
@@ -68,6 +70,8 @@ class T101_spp extends CI_Controller
       $this->load->view("t101_spp/t101_spp_tunggakan_tgl", $data);
     }
 
+
+    // tunggakan berdasarkan nis
     public function tunggakan_nis()
     {
         $q = urldecode($this->input->get('q', TRUE));
@@ -114,6 +118,8 @@ class T101_spp extends CI_Controller
         $this->load->view('t101_spp/t101_spp_tunggakan_nis', $data);
     }
 
+
+    // ubah spp2
     function ubah_spp2() {
       // check login
       if (!$this->ion_auth->logged_in()) {
@@ -187,6 +193,8 @@ class T101_spp extends CI_Controller
       $this->load->view("t101_spp/t101_spp_ubah_spp2", $data);
     }
 
+
+    // ubah spp2 action
     function ubah_spp2_action() {
       $data = array(
         "idkelas" => $this->input->post("idkelas", true),
@@ -198,6 +206,8 @@ class T101_spp extends CI_Controller
       redirect(site_url('t101_spp/ubah_spp2'));
     }
 
+
+    // ubah spp
     function ubah_spp() {
 
       // check login
@@ -251,12 +261,14 @@ class T101_spp extends CI_Controller
       $this->load->view("t101_spp/t101_spp_ubah_spp", $data);
     }
 
+
+    // index
     public function index()
     {
         $q = urldecode($this->input->get('q', TRUE));
         $start = intval($this->input->get('start'));
 
-        $config['per_page'] = 12;
+        $config['per_page'] = 10000000;
         $config['page_query_string'] = TRUE;
 
         $dataSiswa = 0;
@@ -297,6 +309,7 @@ class T101_spp extends CI_Controller
         $this->load->view('t101_spp/t101_spp_list', $data);
     }
 
+
     // cetak bukti pembayaran
     public function cetak()
     {
@@ -315,6 +328,7 @@ class T101_spp extends CI_Controller
         );
         $this->load->view("t101_spp/t101_spp_invoice", $data);
     }
+
 
     // cetak laporan ke layar
     public function laporan()
@@ -350,6 +364,7 @@ class T101_spp extends CI_Controller
       $this->load->view("t101_spp/t101_spp_laporan", $data);
     }
 
+
     // cetak laporan ke xls
     public function laporan_xls()
     {
@@ -371,6 +386,7 @@ class T101_spp extends CI_Controller
       );
       $this->load->view("t101_spp/t101_spp_laporan_xls", $data);
     }
+
 
     // proses pembayaran spp
     public function bayar($idSpp, $q, $start)
@@ -398,6 +414,8 @@ class T101_spp extends CI_Controller
         redirect("t101_spp?q=".$q);
     }
 
+
+    // read
     public function read($id)
     {
         $row = $this->T101_spp_model->get_by_id($id);
@@ -422,6 +440,8 @@ class T101_spp extends CI_Controller
         }
     }
 
+
+    // create
     public function create()
     {
         $data = array(
@@ -442,6 +462,8 @@ class T101_spp extends CI_Controller
         $this->load->view('t101_spp/t101_spp_form', $data);
     }
 
+
+    // create action
     public function create_action()
     {
         $this->_rules();
@@ -467,9 +489,12 @@ class T101_spp extends CI_Controller
         }
     }
 
-    public function update($id)
+
+    // update
+    public function update($id, $q)
     {
-        $row = $this->T101_spp_model->get_by_id($id);
+        $row = $this->T101_spp_model->get_by_id_object($id);
+        $dataSiswa = $this->T101_spp_model->getSiswa($q);
 
         if ($row) {
             $data = array(
@@ -486,6 +511,10 @@ class T101_spp extends CI_Controller
             		'byrworksheet' => set_value('byrworksheet', $row->byrworksheet),
             		'ket' => set_value('ket', $row->ket),
             		'idadmin' => set_value('idadmin', $row->idadmin),
+                "head" => array("title" => "Ubah SPP Siswa"),
+                "title" => "Ubah SPP Siswa",
+                'dataSiswa' => $dataSiswa,
+                'q' => $q,
             );
             $this->load->view('t101_spp/t101_spp_form', $data);
         } else {
@@ -494,12 +523,14 @@ class T101_spp extends CI_Controller
         }
     }
 
+
+    // update action
     public function update_action()
     {
         $this->_rules();
 
         if ($this->form_validation->run() == FALSE) {
-            $this->update($this->input->post('idspp', TRUE));
+            $this->update($this->input->post('idspp', TRUE), $this->input->post('q', TRUE));
         } else {
             $data = array(
             		'idsiswa' => $this->input->post('idsiswa',TRUE),
@@ -515,10 +546,12 @@ class T101_spp extends CI_Controller
             );
             $this->T101_spp_model->update($this->input->post('idspp', TRUE), $data);
             $this->session->set_flashdata('message', 'Update Record Success');
-            redirect(site_url('t101_spp'));
+            redirect(site_url('t101_spp/index?q='.$this->input->post('q', true)));
         }
     }
 
+
+    // delete
     public function delete($id)
     {
         $row = $this->T101_spp_model->get_by_id($id);
@@ -533,23 +566,27 @@ class T101_spp extends CI_Controller
         }
     }
 
+
+    // rules
     public function _rules()
     {
-      	$this->form_validation->set_rules('idsiswa', 'idsiswa', 'trim|required');
-      	$this->form_validation->set_rules('jatuhtempo', 'jatuhtempo', 'trim|required');
-      	$this->form_validation->set_rules('bulan', 'bulan', 'trim|required');
-      	$this->form_validation->set_rules('nobayar', 'nobayar', 'trim|required');
-      	$this->form_validation->set_rules('tglbayar', 'tglbayar', 'trim|required');
+      	// $this->form_validation->set_rules('idsiswa', 'idsiswa', 'trim|required');
+      	// $this->form_validation->set_rules('jatuhtempo', 'jatuhtempo', 'trim|required');
+      	// $this->form_validation->set_rules('bulan', 'bulan', 'trim|required');
+      	// $this->form_validation->set_rules('nobayar', 'nobayar', 'trim|required');
+      	// $this->form_validation->set_rules('tglbayar', 'tglbayar', 'trim|required');
       	$this->form_validation->set_rules('byrspp', 'byrspp', 'trim|required');
       	$this->form_validation->set_rules('byrcatering', 'byrcatering', 'trim|required');
       	$this->form_validation->set_rules('byrworksheet', 'byrworksheet', 'trim|required');
-      	$this->form_validation->set_rules('ket', 'ket', 'trim|required');
-      	$this->form_validation->set_rules('idadmin', 'idadmin', 'trim|required');
+      	// $this->form_validation->set_rules('ket', 'ket', 'trim|required');
+      	// $this->form_validation->set_rules('idadmin', 'idadmin', 'trim|required');
 
       	$this->form_validation->set_rules('idspp', 'idspp', 'trim');
       	$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
     }
 
+
+    // excel
     public function excel()
     {
         $this->load->helper('exportexcel');
@@ -607,6 +644,8 @@ class T101_spp extends CI_Controller
         exit();
     }
 
+
+    // word
     public function word()
     {
         header("Content-type: application/vnd.ms-word");

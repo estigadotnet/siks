@@ -325,6 +325,13 @@ class T101_spp_model extends CI_Model
         return $this->db->get($this->table)->result();
     }
 
+    // get data by id (tipe object)
+    function get_by_id_object($id)
+    {
+        $this->db->where($this->id, $id);
+        return $this->db->get($this->table)->row();
+    }
+
 }
 
 /* End of file T101_spp_model.php */

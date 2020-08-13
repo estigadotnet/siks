@@ -90,7 +90,7 @@
               <td><?php echo (substr($t004_siswa->kelas, 0, 1) > 1 ? $nonRutinTrans[$t004_siswa->idsiswa][$i] : 0); ?></td>
                 <?php
               } ?>
-        			<td style="text-align:center" width="15%">
+        			<td style="text-align:left" width="17%">
         				<?php
         				echo anchor(site_url('t004_siswa/read/'.$t004_siswa->idsiswa),'Read');
         				echo ' | ';

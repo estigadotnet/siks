@@ -55,7 +55,7 @@
 
           <hr/>
         	<div class="page-header">
-        		<h3>Biodata Siswa</h3>
+        		<h4>Biodata Siswa</h4>
         	</div>
           <div class="table-responsive-sm">
           	<table class="table table-sm">
@@ -86,7 +86,7 @@
           </div>
 
         	<div class="page-header">
-        		<h3>Tagihan SPP Siswa</h3>
+        		<h4>Tagihan SPP Siswa</h4>
         	</div>
           <table class="table-sm table-bordered table-sm" style="margin-bottom: 10px">
             <tr>
@@ -114,9 +114,11 @@
         			<td align="right"><?php echo number_format($t101_spp->byrcatering) ?></td>
         			<td align="right"><?php echo number_format($t101_spp->byrworksheet) ?></td>
         			<td><?php echo $t101_spp->ket ?></td>
-              <td align="center">
+              <td align="left">
               <?php if ($t101_spp->nobayar == '') { ?>
 						  <a href='<?php echo site_url('t101_spp/bayar/'.$t101_spp->idspp."/".$q."/".$start); ?>' class='btn btn-warning btn-sm'>Bayar</a>
+              |
+              <a href='<?php echo site_url('t101_spp/update/'.$t101_spp->idspp."/".$q); ?>' class='btn btn-warning btn-sm'>Update</a>
               <?php } else { ?>
 						  <a href='<?php echo site_url('t101_spp/cetak?idSpp='.$t101_spp->idspp."&q=".$q); ?>' class='btn btn-info btn-sm' target='blank'>Cetak</a>
               <?php } ?>
