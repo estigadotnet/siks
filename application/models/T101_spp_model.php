@@ -332,6 +332,32 @@ class T101_spp_model extends CI_Model
         return $this->db->get($this->table)->row();
     }
 
+    // get data yang belum bayar, untuk ubah spp per siswa sekaligus beberapa bulan
+    function get_bulan2($idsiswa)
+    {
+        $q = "SELECT * FROM `t101_spp` WHERE idsiswa = ".$idsiswa." and nobayar = '' order by idspp";
+        return $this->db->query($q)->result();
+    }
+
+    // update data versi 2 => update spp per siswa
+    function update2($id, $data, $bulan2)
+    {
+        // $this->db->where($this->id, $id);
+        // $this->db->update($this->table, $data);
+        echo pre($id);
+        echo pre($data);
+        echo pre($bulan2); //exit;
+        foreach ($bulan2 as $bulan) {
+          // code...
+          $q = "update t101_spp set
+            byrspp = ".$data["byrspp"].",
+            byrcatering = ".$data["byrcatering"].",
+            byrworksheet = ".$data["byrworksheet"]."
+            where idsiswa = ".$data["idsiswa"]." and bulan = '".$bulan."'"; //echo $q; exit;
+          $this->db->query($q);
+        }
+    }
+
 }
 
 /* End of file T101_spp_model.php */

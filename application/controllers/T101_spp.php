@@ -495,6 +495,7 @@ class T101_spp extends CI_Controller
     {
         $row = $this->T101_spp_model->get_by_id_object($id);
         $dataSiswa = $this->T101_spp_model->getSiswa($q);
+        $row_bulan2 = $this->T101_spp_model->get_bulan2($row->idsiswa);
 
         if ($row) {
             $data = array(
@@ -515,6 +516,7 @@ class T101_spp extends CI_Controller
                 "title" => "Ubah SPP Siswa",
                 'dataSiswa' => $dataSiswa,
                 'q' => $q,
+                'row_bulan2' => $row_bulan2,
             );
             $this->load->view('t101_spp/t101_spp_form', $data);
         } else {
@@ -544,7 +546,8 @@ class T101_spp extends CI_Controller
             		'ket' => $this->input->post('ket',TRUE),
             		'idadmin' => $this->input->post('idadmin',TRUE),
             );
-            $this->T101_spp_model->update($this->input->post('idspp', TRUE), $data);
+            // $this->T101_spp_model->update($this->input->post('idspp', TRUE), $data);
+            $this->T101_spp_model->update2($this->input->post('idspp', TRUE), $data, $this->input->post('bulan2'), true);
             $this->session->set_flashdata('message', 'Update Record Success');
             redirect(site_url('t101_spp/index?q='.$this->input->post('q', true)));
         }

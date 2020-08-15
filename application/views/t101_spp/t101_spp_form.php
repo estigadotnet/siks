@@ -80,6 +80,27 @@
               <!-- <label for="date">Tglbayar <?php echo form_error('tglbayar') ?></label> -->
               <input type="hidden" class="form-control" name="tglbayar" id="tglbayar" placeholder="Tglbayar" value="<?php echo $tglbayar; ?>" />
           </div>
+          <div class="form-group">
+          <div class="col-sm-6">
+            <!-- Select multiple-->
+            <div class="form-group">
+              <label>Bulan</label>
+              <select multiple class="form-control" name="bulan2[]" style="height: 200px;">
+                <?php foreach ($row_bulan2 as $row) {
+                  // code...
+                ?>
+                <option><?php echo $row->bulan; ?></option>
+                <?php
+                } ?>
+                <!-- <option>option 1</option>
+                <option>option 2</option>
+                <option>option 3</option>
+                <option>option 4</option>
+                <option>option 5</option> -->
+              </select>
+            </div>
+          </div>
+          </div>
   	    <div class="form-group">
               <label for="int">SPP <?php echo form_error('byrspp') ?></label>
               <input type="text" class="form-control" name="byrspp" id="byrspp" placeholder="Byrspp" value="<?php echo $byrspp; ?>" />
