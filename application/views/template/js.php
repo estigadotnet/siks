@@ -41,5 +41,13 @@
   })
 </script>
 
+<script>
+  $(function () {
+    $('.btn').addClass('btn-sm')
+    $('.table').addClass('table-sm')
+    $('.form-control').addClass('form-control-sm')
+  })
+</script>
+
 </body>
 </html>

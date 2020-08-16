@@ -28,7 +28,7 @@
 
     <!-- Sidebar Menu -->
     <nav class="mt-2">
-      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+      <ul class="nav nav-child-indent nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
 
@@ -137,11 +137,25 @@
                 <p>Ubah SPP</p>
               </a>
             </li> -->
-            <li class="nav-item">
-              <a href="<?php echo site_url(); ?>t101_spp/ubah_spp2" class="nav-link">
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
                 <i class="fas fa-edit nav-icon"></i>
-                <p>Ubah SPP</p>
+                <p>Ubah SPP<i class="right fas fa-angle-left"></i></p>
               </a>
+              <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="<?php echo site_url(); ?>t101_spp/ubah_spp_siswa" class="nav-link">
+                      <i class="far fa-dot-circle nav-icon"></i>
+                      <p>per Siswa</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="<?php echo site_url(); ?>t101_spp/ubah_spp2" class="nav-link">
+                      <i class="far fa-dot-circle nav-icon"></i>
+                      <p>per Kelas</p>
+                    </a>
+                  </li>
+                </ul>
             </li>
             <li class="nav-item">
               <a href="<?php echo site_url(); ?>t103_nonrutin" class="nav-link">

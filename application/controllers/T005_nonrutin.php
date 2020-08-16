@@ -39,11 +39,9 @@ class T005_nonrutin extends CI_Controller
             'pagination' => $this->pagination->create_links(),
             'total_rows' => $config['total_rows'],
             'start' => $start,
-            "head" => array(
-              "title" => "Daftar Pembayaran Non-Rutin"
-            ),
+            "head" => array("title" => "Daftar Pembayaran Non-Rutin"),
             "title" => "Daftar Pembayaran Non-Rutin",
-        );
+          );
         $this->load->view('t005_nonrutin/t005_nonrutin_list', $data);
     }
 
@@ -52,9 +50,11 @@ class T005_nonrutin extends CI_Controller
         $row = $this->T005_nonrutin_model->get_by_id($id);
         if ($row) {
             $data = array(
-		'id' => $row->id,
-		'Jenis' => $row->Jenis,
-	    );
+            		'id' => $row->id,
+            		'Jenis' => $row->Jenis,
+                "head" => array("title" => "Daftar Pembayaran Non-Rutin"),
+                "title" => "Daftar Pembayaran Non-Rutin",
+              );
             $this->load->view('t005_nonrutin/t005_nonrutin_read', $data);
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
@@ -67,9 +67,11 @@ class T005_nonrutin extends CI_Controller
         $data = array(
             'button' => 'Create',
             'action' => site_url('t005_nonrutin/create_action'),
-	    'id' => set_value('id'),
-	    'Jenis' => set_value('Jenis'),
-	);
+      	    'id' => set_value('id'),
+      	    'Jenis' => set_value('Jenis'),
+            "head" => array("title" => "Daftar Pembayaran Non-Rutin"),
+            "title" => "Daftar Pembayaran Non-Rutin",
+          );
         $this->load->view('t005_nonrutin/t005_nonrutin_form', $data);
     }
 
@@ -81,9 +83,8 @@ class T005_nonrutin extends CI_Controller
             $this->create();
         } else {
             $data = array(
-		'Jenis' => $this->input->post('Jenis',TRUE),
-	    );
-
+                'Jenis' => $this->input->post('Jenis',TRUE),
+              );
             $this->T005_nonrutin_model->insert($data);
             $this->session->set_flashdata('message', 'Create Record Success');
             redirect(site_url('t005_nonrutin'));
@@ -98,9 +99,11 @@ class T005_nonrutin extends CI_Controller
             $data = array(
                 'button' => 'Update',
                 'action' => site_url('t005_nonrutin/update_action'),
-		'id' => set_value('id', $row->id),
-		'Jenis' => set_value('Jenis', $row->Jenis),
-	    );
+            		'id' => set_value('id', $row->id),
+            		'Jenis' => set_value('Jenis', $row->Jenis),
+                "head" => array("title" => "Daftar Pembayaran Non-Rutin"),
+                "title" => "Daftar Pembayaran Non-Rutin",
+              );
             $this->load->view('t005_nonrutin/t005_nonrutin_form', $data);
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
@@ -116,9 +119,8 @@ class T005_nonrutin extends CI_Controller
             $this->update($this->input->post('id', TRUE));
         } else {
             $data = array(
-		'Jenis' => $this->input->post('Jenis',TRUE),
-	    );
-
+                'Jenis' => $this->input->post('Jenis',TRUE),
+              );
             $this->T005_nonrutin_model->update($this->input->post('id', TRUE), $data);
             $this->session->set_flashdata('message', 'Update Record Success');
             redirect(site_url('t005_nonrutin'));
@@ -141,10 +143,10 @@ class T005_nonrutin extends CI_Controller
 
     public function _rules()
     {
-	$this->form_validation->set_rules('Jenis', 'jenis', 'trim|required');
+      	$this->form_validation->set_rules('Jenis', 'jenis', 'trim|required');
 
-	$this->form_validation->set_rules('id', 'id', 'trim');
-	$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
+      	$this->form_validation->set_rules('id', 'id', 'trim');
+      	$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
     }
 
     public function excel()
@@ -169,16 +171,16 @@ class T005_nonrutin extends CI_Controller
 
         $kolomhead = 0;
         xlsWriteLabel($tablehead, $kolomhead++, "No");
-	xlsWriteLabel($tablehead, $kolomhead++, "Jenis");
+      	xlsWriteLabel($tablehead, $kolomhead++, "Jenis");
 
-	foreach ($this->T005_nonrutin_model->get_all() as $data) {
+      	foreach ($this->T005_nonrutin_model->get_all() as $data) {
             $kolombody = 0;
 
             //ubah xlsWriteLabel menjadi xlsWriteNumber untuk kolom numeric
             xlsWriteNumber($tablebody, $kolombody++, $nourut);
-	    xlsWriteLabel($tablebody, $kolombody++, $data->Jenis);
+      	    xlsWriteLabel($tablebody, $kolombody++, $data->Jenis);
 
-	    $tablebody++;
+      	    $tablebody++;
             $nourut++;
         }
 

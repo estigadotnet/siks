@@ -90,15 +90,15 @@
               <td><?php echo (substr($t004_siswa->kelas, 0, 1) > 1 ? $nonRutinTrans[$t004_siswa->idsiswa][$i] : 0); ?></td>
                 <?php
               } ?>
-        			<td style="text-align:left" width="17%">
+        			<td style="text-align:left" width="15%">
         				<?php
         				echo anchor(site_url('t004_siswa/read/'.$t004_siswa->idsiswa),'Read');
         				echo ' | ';
         				echo anchor(site_url('t004_siswa/update/'.$t004_siswa->idsiswa),'Update');
         				echo ' | ';
         				echo anchor(site_url('t004_siswa/delete/'.$t004_siswa->idsiswa),'Delete','onclick="javasciprt: return confirm(\'Are You Sure ?\')"');
-						echo ' | ';
-        				echo anchor(site_url('t101_spp/index?q='.$t004_siswa->nis),'Bayar');
+						    // echo ' | ';
+        				// echo anchor(site_url('t101_spp/index?q='.$t004_siswa->nis),'Bayar');
         				?>
         			</td>
         		</tr>

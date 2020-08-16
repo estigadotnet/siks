@@ -10,6 +10,7 @@ class T101_spp extends CI_Controller
         parent::__construct();
         $this->load->model('T101_spp_model');
         $this->load->library('form_validation');
+        $this->load->model('T004_siswa_model');
     }
 
 
@@ -187,8 +188,8 @@ class T101_spp extends CI_Controller
         "aBulan"      => $aBulan,
         "aJenis"      => $aJenis,
         "idkelas"     => set_value("idkelas", $idkelas),
-        "head"        => array("title" => "Ubah Nominal SPP"),
-        "title"       => "Ubah Nominal SPP",
+        "head"        => array("title" => "Ubah SPP per Kelas"),
+        "title"       => "Ubah SPP per Kelas",
       );
       $this->load->view("t101_spp/t101_spp_ubah_spp2", $data);
     }
@@ -266,20 +267,30 @@ class T101_spp extends CI_Controller
     public function index()
     {
         $q = urldecode($this->input->get('q', TRUE));
+        $q2 = urldecode($this->input->get('q2', TRUE));
         $start = intval($this->input->get('start'));
 
         $config['per_page'] = 10000000;
         $config['page_query_string'] = TRUE;
 
         $dataSiswa = 0;
+        $t004_siswa = 0;
 
-        if ($q <> '') {
-            $config['base_url'] = base_url() . 't101_spp?q=' . urlencode($q);
-            $config['first_url'] = base_url() . 't101_spp?q=' . urlencode($q);
+        if ($q <> '' or $q2 <> '') {
+            $config['base_url'] = base_url() . 't101_spp?q=' . urlencode($q) . '&q2=' . urlencode($q2);
+            $config['first_url'] = base_url() . 't101_spp?q=' . urlencode($q) . '&q2=' . urlencode($q2);
             $config['total_rows'] = $this->T101_spp_model->total_rows_nis($q);
-            $t101_spp = $this->T101_spp_model->get_limit_data_nis($config['per_page'], $start, $q);
-            $dataSiswa = $this->T101_spp_model->getSiswa($q);
-            if ($t101_spp == 0) $q = "";
+            $t101_spp             = $this->T101_spp_model->get_limit_data_nis($config['per_page'], $start, $q);
+            $dataSiswa            = $this->T101_spp_model->getSiswa($q);
+            $t004_siswa = $this->T004_siswa_model->get_list_siswa($q, $q2);
+            if ($t101_spp == 0)
+            {
+              $q = "";
+            }
+            if ($t004_siswa == 0)
+            {
+              $q2 = '';
+            }
         } else {
             $config['base_url'] = base_url() . 't101_spp';
             $config['first_url'] = base_url() . 't101_spp';
@@ -294,13 +305,14 @@ class T101_spp extends CI_Controller
             "dataSiswa" => $dataSiswa,
             't101_spp_data' => $t101_spp,
             'q' => $q,
+            'q2' => $q2,
             'pagination' => $this->pagination->create_links(),
             'total_rows' => $config['total_rows'],
             'start' => $start,
-            "head" => array(
-              "title" => "Pembayaran SPP"),
+            "head" => array("title" => "Pembayaran SPP"),
             "title" => "Pembayaran SPP",
-        );
+            't004_siswa_data' => $t004_siswa,
+          );
 
         if (!$this->ion_auth->logged_in()) {
             redirect('/auth', 'refresh');
@@ -512,8 +524,8 @@ class T101_spp extends CI_Controller
             		'byrworksheet' => set_value('byrworksheet', $row->byrworksheet),
             		'ket' => set_value('ket', $row->ket),
             		'idadmin' => set_value('idadmin', $row->idadmin),
-                "head" => array("title" => "Ubah SPP Siswa"),
-                "title" => "Ubah SPP Siswa",
+                "head" => array("title" => "Ubah SPP per Siswa"),
+                "title" => "Ubah SPP per Siswa",
                 'dataSiswa' => $dataSiswa,
                 'q' => $q,
                 'row_bulan2' => $row_bulan2,
@@ -660,6 +672,64 @@ class T101_spp extends CI_Controller
         );
 
         $this->load->view('t101_spp/t101_spp_doc',$data);
+    }
+
+    // ubah spp per siswa
+    function ubah_spp_siswa()
+    {
+      $q = urldecode($this->input->get('q', TRUE));
+      $q2 = urldecode($this->input->get('q2', TRUE));
+      $start = intval($this->input->get('start'));
+
+      $config['per_page'] = 10000000;
+      $config['page_query_string'] = TRUE;
+
+      $dataSiswa = 0;
+      $t004_siswa = 0;
+
+      if ($q <> '' or $q2 <> '') {
+          $config['base_url'] = base_url() . 't101_spp/ubah_spp_siswa?q=' . urlencode($q) . '&q2=' . urlencode($q2);
+          $config['first_url'] = base_url() . 't101_spp/ubah_spp_siswa?q=' . urlencode($q) . '&q2=' . urlencode($q2);
+          $config['total_rows'] = $this->T101_spp_model->total_rows_nis($q);
+          $t101_spp             = $this->T101_spp_model->get_limit_data_nis($config['per_page'], $start, $q);
+          $dataSiswa            = $this->T101_spp_model->getSiswa($q);
+          $t004_siswa = $this->T004_siswa_model->get_list_siswa($q, $q2);
+          if ($t101_spp == 0)
+          {
+            $q = "";
+          }
+          if ($t004_siswa == 0)
+          {
+            $q2 = '';
+          }
+      } else {
+          $config['base_url'] = base_url() . 't101_spp/ubah_spp_siswa';
+          $config['first_url'] = base_url() . 't101_spp/ubah_spp_siswa';
+          $config['total_rows'] = $this->T101_spp_model->total_rows($q);
+          $t101_spp = $this->T101_spp_model->get_limit_data($config['per_page'], $start, $q);
+      }
+
+      $this->load->library('pagination');
+      $this->pagination->initialize($config);
+
+      $data = array(
+          "dataSiswa" => $dataSiswa,
+          't101_spp_data' => $t101_spp,
+          'q' => $q,
+          'q2' => $q2,
+          'pagination' => $this->pagination->create_links(),
+          'total_rows' => $config['total_rows'],
+          'start' => $start,
+          "head" => array("title" => "Ubah SPP per Siswa"),
+          "title" => "Ubah SPP per Siswa",
+          't004_siswa_data' => $t004_siswa,
+        );
+
+      if (!$this->ion_auth->logged_in()) {
+          redirect('/auth', 'refresh');
+      }
+
+      $this->load->view('t101_spp/t101_spp_list_2', $data);
     }
 
 }

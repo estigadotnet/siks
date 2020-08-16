@@ -29,7 +29,7 @@
 
           <div class="row">
             <div class="col">
-              <form method="get" action="<?php echo site_url('t101_spp/index'); ?>" class="form-horizontal">
+              <form method="get" action="<?php echo site_url('t101_spp/ubah_spp_siswa'); ?>" class="form-horizontal">
 
                 <div class="form-group">
               		<label class="control-label" for="nis">NIS :</label>
@@ -48,10 +48,8 @@
                 <div class="form-group">
               		<div class="input-group">
               			<button type="submit" class="btn btn-primary">Cari Siswa</button>
-                    <?php //echo 'q: '.$q.' q2: '.$q2; ?>
                     <?php //if ($q <> '' or $q2 <> '') { ?>
-                    <?php //if ($t004_siswa_data <> 0) { ?>
-                    &nbsp;<a href="<?php echo site_url('t101_spp'); ?>" class="btn btn-default">Reset</a>
+                    &nbsp;<a href="<?php echo site_url('t101_spp/ubah_spp_siswa'); ?>" class="btn btn-default">Reset</a>
                     <?php //} ?>
               		</div>
               	</div>
@@ -93,7 +91,8 @@
               <td><?php echo $t004_siswa->byrworksheet ?></td>
               <td style="text-align:left" width="15%">
                 <?php
-                echo anchor(site_url('t101_spp/index?q='.$t004_siswa->nis),'Bayar');
+                // echo anchor(site_url('t101_spp/index?q='.$t004_siswa->nis),'Update');
+                echo anchor(site_url('t101_spp/update/'.$t004_siswa->idsiswa.'/'.$t004_siswa->nis),'Update');
                 ?>
               </td>
             </tr>

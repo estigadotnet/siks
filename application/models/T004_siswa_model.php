@@ -373,6 +373,27 @@ class T004_siswa_model extends CI_Model
       return $this->db->query($s)->result();
     }
 
+    // get list siswa untuk list di pembayaran spp
+    function get_list_siswa($nis = NULL, $namasiswa = NULL)
+    {
+      // $q = "select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where (nis like '%".$nis."%' or namasiswa like '%".$namasiswa."%') and tahunajaran = '".$this->session->userdata("tahunajaran")."'";
+      if ($nis <> '')
+      {
+        $q = "select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where nis like '%".$nis."%'";
+      }
+      else if ($namasiswa <> '')
+      {
+        $q = "select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where namasiswa like '%".$namasiswa."%'";
+      }
+      else
+      {
+        $q = "select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where nis = '99999999'";
+      }
+
+      // echo $q; exit;
+      return $this->db->query($q)->result();
+    }
+
 }
 
 /* End of file T004_siswa_model.php */

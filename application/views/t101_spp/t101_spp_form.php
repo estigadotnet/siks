@@ -124,7 +124,8 @@
   	    <input type="hidden" name="idspp" value="<?php echo $idspp; ?>" />
         <input type="hidden" name="q" value="<?php echo $q; ?>" />
   	    <button type="submit" class="btn btn-primary"><?php echo $button ?></button>
-  	    <a href="<?php echo site_url('t101_spp/index?q='.$q) ?>" class="btn btn-default">Cancel</a>
+  	    <!-- <a href="<?php echo site_url('t101_spp/index?q='.$q) ?>" class="btn btn-default">Cancel</a> -->
+        <a href="<?php echo site_url('t101_spp/ubah_spp_siswa') ?>" class="btn btn-default">Cancel</a>
   	</form>
 
         </div>

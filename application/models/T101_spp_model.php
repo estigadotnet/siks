@@ -87,9 +87,9 @@ class T101_spp_model extends CI_Model
     }
 
     //
-    function getSiswa($nis)
+    function getSiswa($nis = NULL, $namasiswa = NULL)
     {
-        $q = $this->db->query("select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where nis = '".$nis."' and tahunajaran = '".$this->session->userdata("tahunajaran")."'");
+        $q = $this->db->query("select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where nis = '".$nis."' or namasiswa = '".$namasiswa."' and tahunajaran = '".$this->session->userdata("tahunajaran")."'");
         return $q->result_array();
     }
 
@@ -328,7 +328,9 @@ class T101_spp_model extends CI_Model
     // get data by id (tipe object)
     function get_by_id_object($id)
     {
-        $this->db->where($this->id, $id);
+        // $this->db->where($this->id, $id);
+        $this->db->where('idsiswa', $id);
+        $this->db->where('nobayar', '');
         return $this->db->get($this->table)->row();
     }
 
