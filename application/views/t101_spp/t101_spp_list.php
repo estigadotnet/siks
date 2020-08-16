@@ -93,7 +93,7 @@
               <td><?php echo $t004_siswa->byrworksheet ?></td>
               <td style="text-align:left" width="15%">
                 <?php
-                echo anchor(site_url('t101_spp/index?q='.$t004_siswa->nis),'Bayar');
+                echo anchor(site_url('t101_spp/index?q='.$t004_siswa->nis),'Proses');
                 ?>
               </td>
             </tr>
