@@ -506,7 +506,7 @@ class T101_spp extends CI_Controller
     public function update($id, $q)
     {
         $row = $this->T101_spp_model->get_by_id_object($id);
-        $dataSiswa = $this->T101_spp_model->getSiswa($q);
+        $dataSiswa = $this->T101_spp_model->getSiswa($q,null,$id);
         $row_bulan2 = $this->T101_spp_model->get_bulan2($row->idsiswa);
 
         if ($row) {
