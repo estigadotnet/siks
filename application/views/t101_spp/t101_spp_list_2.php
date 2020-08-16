@@ -92,7 +92,7 @@
               <td style="text-align:left" width="15%">
                 <?php
                 // echo anchor(site_url('t101_spp/index?q='.$t004_siswa->nis),'Update');
-                echo anchor(site_url('t101_spp/update/'.$t004_siswa->idsiswa.'/'.$t004_siswa->nis),'Update');
+                echo anchor(site_url('t101_spp/update/'.$t004_siswa->idsiswa.'/'.$t004_siswa->nis.'/'.$t004_siswa->tahunajaran),'Update');
                 ?>
               </td>
             </tr>
