@@ -87,7 +87,17 @@ class T101_spp_model extends CI_Model
     }
 
     //
-    function getSiswa($nis = NULL, $namasiswa = NULL, $idsiswa = NULL, $tahunajaran = NULL, $tahunajaran2 = NULL)
+    function getSiswa($nis = NULL)
+    {
+        $q = "select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where nis = '".$nis."'  and tahunajaran = '".$this->session->userdata("tahunajaran")."'";
+        // $q = "select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where (nis = '".$nis."' or namasiswa = '".$namasiswa."') and idsiswa = '".$idsiswa."' and tahunajaran = '".$tahunajaran."/".$tahunajaran2."'";
+        // echo $q; exit;
+        $r = $this->db->query($q);
+        return $r->result_array();
+    }
+
+    //
+    function getSiswa_2($nis = NULL, $namasiswa = NULL, $idsiswa = NULL, $tahunajaran = NULL, $tahunajaran2 = NULL)
     {
         // $q = "select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where (nis = '".$nis."' or namasiswa = '".$namasiswa."') and idsiswa = '".$idsiswa."' and tahunajaran = '".$this->session->userdata("tahunajaran")."'";
         $q = "select a.*, b.kelas from t004_siswa a left join t003_kelas b on a.idkelas = b.idkelas where (nis = '".$nis."' or namasiswa = '".$namasiswa."') and idsiswa = '".$idsiswa."' and tahunajaran = '".$tahunajaran."/".$tahunajaran2."'";
