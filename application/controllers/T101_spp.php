@@ -507,7 +507,7 @@ class T101_spp extends CI_Controller
     {
         $row = $this->T101_spp_model->get_by_id_object($id);
         $dataSiswa = $this->T101_spp_model->getSiswa_2($q, null, $id, $tahunajaran, $tahunajaran2);
-        $row_bulan2 = $this->T101_spp_model->get_bulan2($row->idsiswa);
+        $row_bulan2 = $this->T101_spp_model->get_bulan2($id);
 
         if ($row) {
             $data = array(
@@ -533,7 +533,7 @@ class T101_spp extends CI_Controller
             $this->load->view('t101_spp/t101_spp_form', $data);
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url('t101_spp'));
+            redirect(site_url('t101_spp/ubah_spp_siswa'));
         }
     }
 
