@@ -77,54 +77,41 @@
         <table class="table table-bordered" style="margin-bottom: 10px">
             <tr>
                 <th>No</th>
-    <th>NIS</th>
-    <th>Nama Siswa</th>
-    <th>Kelas</th>
-    <th>Tahun Ajaran</th>
-		<th>SPP</th>
-		<th>Catering</th>
-		<th>Worksheet</th>
-		<th>Action</th>
-            </tr><?php
+                <th>NIS</th>
+                <th>Nama Siswa</th>
+                <th>Kelas</th>
+                <th>Tahun Ajaran</th>
+            		<th>SPP</th>
+            		<th>Catering</th>
+            		<th>Worksheet</th>
+            		<th>Action</th>
+            </tr>
+            <?php
             foreach ($t101_spp_data as $t101_spp)
             {
-                ?>
-                <tr>
-			<td><?php echo ++$start ?></td>
-      <td><?php echo $t101_spp->nis ?></td>
-      <td><?php echo $t101_spp->namasiswa ?></td>
-      <td><?php echo $t101_spp->kelas ?></td>
-      <td><?php echo $t101_spp->tahunajaran ?></td>
-			<td><?php echo $t101_spp->byrspp ?></td>
-			<td><?php echo $t101_spp->byrcatering ?></td>
-			<td><?php echo $t101_spp->byrworksheet ?></td>
-			<td style="text-align:left" >
-				<?php
-				// echo anchor(site_url('t101_spp2/read/'.$t101_spp2->idspp),'Read');
-				// echo ' | ';
-				echo anchor(site_url('t101_spp/update/'.$t101_spp->idspp),'Update');
-				// echo ' | ';
-				// echo anchor(site_url('t101_spp2/delete/'.$t101_spp2->idspp),'Delete','onclick="javasciprt: return confirm(\'Are You Sure ?\')"');
-				?>
-			</td>
-		</tr>
-                <?php
+            ?>
+            <tr>
+          			<td><?php echo ++$start ?></td>
+                <td><?php echo $t101_spp->nis ?></td>
+                <td><?php echo $t101_spp->namasiswa ?></td>
+                <td><?php echo $t101_spp->kelas ?></td>
+                <td><?php echo $t101_spp->tahunajaran ?></td>
+          			<td><?php echo $t101_spp->byrspp ?></td>
+          			<td><?php echo $t101_spp->byrcatering ?></td>
+          			<td><?php echo $t101_spp->byrworksheet ?></td>
+          			<td style="text-align:left" >
+        				<?php
+        				echo anchor(site_url('t101_spp/update/'.$t101_spp->idspp),'Update');
+        				?>
+                </td>
+		        </tr>
+            <?php
             }
             ?>
         </table>
-        <div class="row">
-            <div class="col-md-6">
-                <a href="#" class="btn btn-primary">Total Record : <?php echo $total_rows ?></a>
-		<?php echo anchor(site_url('t101_spp/excel'), 'Excel', 'class="btn btn-primary"'); ?>
-		<?php echo anchor(site_url('t101_spp/word'), 'Word', 'class="btn btn-primary"'); ?>
-	    </div>
-            <div class="col-md-6 text-right">
-                <?php echo $pagination ?>
-            </div>
-        </div>
+
         <?php } ?>
-    <!-- </body>
-</html> -->
+
 
         </div>
         <!-- /.container-fluid -->

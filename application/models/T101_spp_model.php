@@ -389,17 +389,33 @@ class T101_spp_model extends CI_Model
 
     // get data with limit and search, only nis and namasiswa
     function get_limit_data_2($limit, $start = 0, $q = NULL) {
-        // $query = "select a.*, b.nis, b.namasiswa, b.tahunajaran from t101_spp2 a left join t004_siswa b on a.idsiswa = b.idsiswa where (nis like '%".$q."%' or namasiswa like '%".$q."%') and nobayar = '' group by a.idsiswa";
+        $query = "
+          select
+            a.*,
+            b.nis,
+            b.namasiswa,
+            b.tahunajaran,
+            c.kelas
+          from
+            t101_spp2 a
+            left join t004_siswa b on a.idsiswa = b.idsiswa
+            left join t003_kelas c on b.idkelas = c.idkelas
+          where
+            (nis like '%".$q."%' or namasiswa like '%".$q."%')
+            and nobayar = ''
+          group by
+            a.idsiswa";
         // return $this->db->query($query)->result();
-        $this->db->select('idspp, t101_spp.idsiswa, nis, namasiswa, tahunajaran, t003_kelas.kelas, t101_spp.byrspp, t101_spp.byrcatering, t101_spp.byrworksheet');
-        $this->db->from($this->table);
-        $this->db->join('t004_siswa', 't101_spp.idsiswa = t004_siswa.idsiswa', 'left');
-        $this->db->join('t003_kelas', 't004_siswa.idkelas = t003_kelas.idkelas', 'left');
-        $this->db->where('nobayar', '');
-        $this->db->like('nis', $q);
-        $this->db->or_like('namasiswa', $q);
-        $this->db->group_by('t101_spp.idsiswa');
-        return $this->db->get()->result();
+        // $this->db->select('nobayar, idspp, t101_spp.idsiswa, nis, namasiswa, tahunajaran, t003_kelas.kelas, t101_spp.byrspp, t101_spp.byrcatering, t101_spp.byrworksheet');
+        // $this->db->from($this->table);
+        // $this->db->join('t004_siswa', 't101_spp.idsiswa = t004_siswa.idsiswa', 'left');
+        // $this->db->join('t003_kelas', 't004_siswa.idkelas = t003_kelas.idkelas', 'left');
+        // $this->db->where('nobayar', '');
+        // $this->db->like('nis', $q);
+        // $this->db->or_like('namasiswa', $q);
+        // $this->db->group_by('t101_spp.idsiswa');
+        // return $this->db->get()->result();
+        return $this->db->query($query)->result();
     }
 
 }
