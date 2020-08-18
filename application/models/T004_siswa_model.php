@@ -29,7 +29,7 @@ class T004_siswa_model extends CI_Model
         $this->db->select("idsiswa, nis, namasiswa, t004_siswa.idkelas, tahunajaran, byrspp, byrcatering, byrworksheet, kelas");
         $this->db->from("t004_siswa");
         $this->db->join("t003_kelas", "t004_siswa.idkelas = t003_kelas.idkelas");
-        $this->db->where("tahunajaran", $this->session->userdata("tahunajaran"));
+        // $this->db->where("tahunajaran", $this->session->userdata("tahunajaran"));
         $this->db->where($this->id, $id);
         //return $this->db->get($this->table)->row();
         return $this->db->get()->row();

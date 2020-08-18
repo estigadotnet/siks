@@ -765,6 +765,69 @@ class T101_spp extends CI_Controller
         $this->load->view('t101_spp/t101_spp_list_3', $data);
     }
 
+    // update versi 2
+    public function update_2($idsiswa) // $id = idspp
+    {
+        $row = $this->T101_spp_model->get_by_idsiswa($idsiswa);
+        $data_siswa = $this->T004_siswa_model->get_by_id($idsiswa); // echo pre($data_siswa);
+        $row_bulan2 = $this->T101_spp_model->get_bulan_2($idsiswa);
+
+        if ($row) {
+            $data = array(
+                'button' => 'Update',
+                'action' => site_url('t101_spp/update_2_action'),
+            		'idspp' => set_value('idspp', $row->idspp),
+            		'idsiswa' => set_value('idsiswa', $row->idsiswa),
+            		'jatuhtempo' => set_value('jatuhtempo', $row->jatuhtempo),
+            		'bulan' => set_value('bulan', $row->bulan),
+            		'nobayar' => set_value('nobayar', $row->nobayar),
+            		'tglbayar' => set_value('tglbayar', $row->tglbayar),
+            		'byrspp' => set_value('byrspp', $row->byrspp),
+            		'byrcatering' => set_value('byrcatering', $row->byrcatering),
+            		'byrworksheet' => set_value('byrworksheet', $row->byrworksheet),
+            		'ket' => set_value('ket', $row->ket),
+            		'idadmin' => set_value('idadmin', $row->idadmin),
+                "head" => array("title" => "Ubah SPP per Siswa"),
+                "title" => "Ubah SPP per Siswa",
+                'data_siswa' => $data_siswa,
+                //'q' => $q,
+                'row_bulan2' => $row_bulan2,
+            );
+            $this->load->view('t101_spp/t101_spp_form_2', $data);
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('t101_spp/ubah_spp_siswa'));
+        }
+    }
+
+    // update action versi 2
+    public function update_2_action()
+    {
+        $this->_rules();
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->update($this->input->post('idspp', TRUE), $this->input->post('q', TRUE));
+        } else {
+            $data = array(
+            		'idsiswa' => $this->input->post('idsiswa',TRUE),
+            		'jatuhtempo' => $this->input->post('jatuhtempo',TRUE),
+            		'bulan' => $this->input->post('bulan',TRUE),
+            		'nobayar' => $this->input->post('nobayar',TRUE),
+            		'tglbayar' => $this->input->post('tglbayar',TRUE),
+            		'byrspp' => $this->input->post('byrspp',TRUE),
+            		'byrcatering' => $this->input->post('byrcatering',TRUE),
+            		'byrworksheet' => $this->input->post('byrworksheet',TRUE),
+            		'ket' => $this->input->post('ket',TRUE),
+            		'idadmin' => $this->input->post('idadmin',TRUE),
+            );
+            // $this->T101_spp_model->update($this->input->post('idspp', TRUE), $data);
+            $this->T101_spp_model->update2($data, $this->input->post('bulan2'), true);
+            $this->session->set_flashdata('message', 'Update Record Success');
+            // redirect(site_url('t101_spp/index?q='.$this->input->post('q', true)));
+            redirect(site_url('t101_spp/ubah_spp_siswa'));
+        }
+    }
+
 }
 
 /* End of file T101_spp.php */

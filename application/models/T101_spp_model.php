@@ -339,10 +339,10 @@ class T101_spp_model extends CI_Model
     }
 
     // get data by id (tipe object)
-    function get_by_id_object($id)
+    function get_by_idsiswa($idsiswa)
     {
         // $this->db->where($this->id, $id);
-        $this->db->where('idsiswa', $id);
+        $this->db->where('idsiswa', $idsiswa);
         $this->db->where('nobayar', '');
         // $row = $this->db->get($this->table)->row();
         // echo $this->db->last_query(); exit;
@@ -350,20 +350,20 @@ class T101_spp_model extends CI_Model
     }
 
     // get data yang belum bayar, untuk ubah spp per siswa sekaligus beberapa bulan
-    function get_bulan2($idsiswa)
+    function get_bulan_2($idsiswa)
     {
         $q = "SELECT * FROM `t101_spp` WHERE idsiswa = ".$idsiswa." and nobayar = '' order by idspp";
         return $this->db->query($q)->result();
     }
 
     // update data versi 2 => update spp per siswa
-    function update2($id, $data, $bulan2)
+    function update2($data, $bulan2)
     {
         // $this->db->where($this->id, $id);
         // $this->db->update($this->table, $data);
-        echo pre($id);
-        echo pre($data);
-        echo pre($bulan2); //exit;
+        // echo pre($id);
+        // echo pre($data);
+        // echo pre($bulan2); //exit;
         foreach ($bulan2 as $bulan) {
           // code...
           $q = "update t101_spp set
@@ -404,7 +404,12 @@ class T101_spp_model extends CI_Model
             (nis like '%".$q."%' or namasiswa like '%".$q."%')
             and nobayar = ''
           group by
-            a.idsiswa";
+            a.idsiswa,
+            b.tahunajaran
+          order by
+            b.nis,
+            b.tahunajaran
+          ";
         // return $this->db->query($query)->result();
         // $this->db->select('nobayar, idspp, t101_spp.idsiswa, nis, namasiswa, tahunajaran, t003_kelas.kelas, t101_spp.byrspp, t101_spp.byrcatering, t101_spp.byrworksheet');
         // $this->db->from($this->table);

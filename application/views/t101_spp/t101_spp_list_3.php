@@ -101,7 +101,8 @@
           			<td><?php echo $t101_spp->byrworksheet ?></td>
           			<td style="text-align:left" >
         				<?php
-        				echo anchor(site_url('t101_spp/update/'.$t101_spp->idspp),'Update');
+        				// echo anchor(site_url('t101_spp/update_2/'.$t101_spp->idspp),'Update');
+                echo anchor(site_url('t101_spp/update_2/'.$t101_spp->idsiswa),'Update');
         				?>
                 </td>
 		        </tr>
