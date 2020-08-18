@@ -397,7 +397,7 @@ class T101_spp_model extends CI_Model
             b.tahunajaran,
             c.kelas
           from
-            t101_spp2 a
+            t101_spp a
             left join t004_siswa b on a.idsiswa = b.idsiswa
             left join t003_kelas c on b.idkelas = c.idkelas
           where
