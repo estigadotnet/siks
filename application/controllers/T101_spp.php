@@ -675,7 +675,7 @@ class T101_spp extends CI_Controller
     }
 
     // ubah spp per siswa
-    function ubah_spp_siswa()
+    function ubah_spp_siswa_lama()
     {
       $q = urldecode($this->input->get('q', TRUE));
       $q2 = urldecode($this->input->get('q2', TRUE));
@@ -730,6 +730,39 @@ class T101_spp extends CI_Controller
       }
 
       $this->load->view('t101_spp/t101_spp_list_2', $data);
+    }
+
+    public function ubah_spp_siswa()
+    {
+        $q = urldecode($this->input->get('q', TRUE));
+        $start = intval($this->input->get('start'));
+
+        if ($q <> '') {
+            $config['base_url'] = base_url() . 't101_spp/ubah_spp_siswa?q=' . urlencode($q);
+            $config['first_url'] = base_url() . 't101_spp/ubah_spp_siswa?q=' . urlencode($q);
+        } else {
+            $config['base_url'] = base_url() . 't101_spp/ubah_spp_siswa';
+            $config['first_url'] = base_url() . 't101_spp/ubah_spp_siswa';
+        }
+
+        $config['per_page'] = 10000000;
+        $config['page_query_string'] = TRUE;
+        $config['total_rows'] = $this->T101_spp_model->total_rows_2($q);
+        $t101_spp = $this->T101_spp_model->get_limit_data_2($config['per_page'], $start, $q);
+
+        $this->load->library('pagination');
+        $this->pagination->initialize($config);
+
+        $data = array(
+            't101_spp_data' => $t101_spp,
+            'q' => $q,
+            'pagination' => $this->pagination->create_links(),
+            'total_rows' => $config['total_rows'],
+            'start' => $start,
+            "head" => array("title" => "Ubah SPP per Siswa"),
+            "title" => "Ubah SPP per Siswa",
+        );
+        $this->load->view('t101_spp/t101_spp_list_3', $data);
     }
 
 }

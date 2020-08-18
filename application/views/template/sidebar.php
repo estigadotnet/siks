@@ -155,6 +155,12 @@
                       <p>per Kelas</p>
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a href="<?php echo site_url(); ?>t101_spp2/ubah_spp_siswa" class="nav-link">
+                      <i class="far fa-dot-circle nav-icon"></i>
+                      <p>per Siswa #2</p>
+                    </a>
+                  </li>
                 </ul>
             </li>
             <li class="nav-item">

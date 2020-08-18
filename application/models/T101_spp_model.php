@@ -375,6 +375,33 @@ class T101_spp_model extends CI_Model
         }
     }
 
+    // get total rows
+    function total_rows_2($q = NULL) {
+        $this->db->select('t101_spp.*, nis, namasiswa, tahunajaran');
+        $this->db->from($this->table);
+        $this->db->join('t004_siswa', 't101_spp.idsiswa = t004_siswa.idsiswa', 'left');
+        $this->db->where('nobayar', '');
+        $this->db->like('nis', $q);
+        $this->db->or_like('namasiswa', $q);
+        $this->db->group_by('t101_spp.idsiswa');
+        return $this->db->count_all_results();
+    }
+
+    // get data with limit and search, only nis and namasiswa
+    function get_limit_data_2($limit, $start = 0, $q = NULL) {
+        // $query = "select a.*, b.nis, b.namasiswa, b.tahunajaran from t101_spp2 a left join t004_siswa b on a.idsiswa = b.idsiswa where (nis like '%".$q."%' or namasiswa like '%".$q."%') and nobayar = '' group by a.idsiswa";
+        // return $this->db->query($query)->result();
+        $this->db->select('idspp, t101_spp.idsiswa, nis, namasiswa, tahunajaran, t003_kelas.kelas, t101_spp.byrspp, t101_spp.byrcatering, t101_spp.byrworksheet');
+        $this->db->from($this->table);
+        $this->db->join('t004_siswa', 't101_spp.idsiswa = t004_siswa.idsiswa', 'left');
+        $this->db->join('t003_kelas', 't004_siswa.idkelas = t003_kelas.idkelas', 'left');
+        $this->db->where('nobayar', '');
+        $this->db->like('nis', $q);
+        $this->db->or_like('namasiswa', $q);
+        $this->db->group_by('t101_spp.idsiswa');
+        return $this->db->get()->result();
+    }
+
 }
 
 /* End of file T101_spp_model.php */
