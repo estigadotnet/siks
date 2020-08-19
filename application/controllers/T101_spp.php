@@ -11,6 +11,7 @@ class T101_spp extends CI_Controller
         $this->load->model('T101_spp_model');
         $this->load->library('form_validation');
         $this->load->model('T004_siswa_model');
+        $this->load->model('T003_kelas_model');
     }
 
 
@@ -826,6 +827,70 @@ class T101_spp extends CI_Controller
             // redirect(site_url('t101_spp/index?q='.$this->input->post('q', true)));
             redirect(site_url('t101_spp/ubah_spp_siswa'));
         }
+    }
+
+    public function tunggak_kelas()
+    {
+      $q        = urldecode($this->input->post('q', TRUE));
+      $idkelas  = $this->input->post("idkelas", true);
+      $tgl1     = "";
+      $tgl2     = "";
+      $t101_spp = 0;
+
+      if ($q <> '') {
+        $tglInput1 = substr($q, 0, 10);
+        $tglInput2 = substr($q, 13, 10);
+        $tgl1 = substr($tglInput1, 6, 4) . "-" . substr($tglInput1, 0, 2) . "-" . substr($tglInput1, 3, 2);
+        $tgl2 = substr($tglInput2, 6, 4) . "-" . substr($tglInput2, 0, 2) . "-" . substr($tglInput2, 3, 2);
+        //$dataByr = $this->T101_spp_model->get_data_bayar($tglByr1, $tglByr2);
+        $t101_spp = $this->T101_spp_model->get_data_tunggakan_kelas($tgl1, $tgl2, $idkelas);
+        if ($t101_spp == 0) $q = "";
+      }
+
+      $data_kelas = $this->T003_kelas_model->get_all();
+      $kelas = $this->T003_kelas_model->get_by_id($idkelas);
+      $data = array(
+        // "tahunajaran" => $tahunajaran,
+        // "dataKelas"   => $dataKelas,
+        // "aBulan"      => $aBulan,
+        // "aJenis"      => $aJenis,
+        // "idkelas"     => set_value("idkelas", $idkelas),
+        "q"             => $q,
+        't101_spp_data' => $t101_spp,
+        "tgl1"          => $tgl1,
+        "tgl2"          => $tgl2,
+        "head"          => array("title" => "Tunggakan SPP per Kelas"),
+        "title"         => "Tunggakan SPP per Kelas",
+        'data_kelas'    => $data_kelas,
+        'idkelas'       => $idkelas,
+        'kelas'         => $kelas,
+      );
+      $this->load->view('t101_spp/t101_spp_tunggak_kelas', $data);
+    }
+
+    // cetak tunggakan kelas ke xls
+    public function tunggak_kelas_xls()
+    {
+      if (!$this->ion_auth->logged_in()) {
+          redirect('/auth', 'refresh');
+      }
+
+      // echo $this->input->post('tglBayar',TRUE);
+      $tgl  = urldecode($this->input->get('tglBayar', TRUE));
+      $idkelas  = urldecode($this->input->get("idkelas", true));
+      $tgl1 = substr($tgl, 0, 10);
+      $tgl2 = substr($tgl, 13, 10);
+      $tglByr1 = substr($tgl1, 6, 4) . "-" . substr($tgl1, 0, 2) . "-" . substr($tgl1, 3, 2);
+      $tglByr2 = substr($tgl2, 6, 4) . "-" . substr($tgl2, 0, 2) . "-" . substr($tgl2, 3, 2);
+      $dataByr = $this->T101_spp_model->get_data_tunggakan_kelas($tglByr1, $tglByr2, $idkelas);
+      $kelas = $this->T003_kelas_model->get_by_id($idkelas);
+      $data = array(
+        "aDataByr" => $dataByr,
+        "tgl1"     => $tglByr1,
+        "tgl2"     => $tglByr2,
+        'kelas'    => $kelas,
+      );
+      $this->load->view("t101_spp/t101_spp_tgk_kls_xls", $data);
     }
 
 }

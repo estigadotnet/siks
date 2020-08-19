@@ -204,7 +204,7 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="<?php echo site_url(); ?>t101_spp/tunggakan_nis" class="nav-link">
+                  <a href="<?php echo site_url(); ?>t101_spp/tunggak_kelas" class="nav-link">
                     <i class="far fa-dot-circle nav-icon"></i>
                     <p>per Kelas</p>
                   </a>
